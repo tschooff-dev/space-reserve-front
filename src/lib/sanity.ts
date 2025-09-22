@@ -21,7 +21,8 @@ export const writeClient = createClient({
 // Helper function for generating Image URLs
 const builder = imageUrlBuilder(sanityClient);
 
-export function urlFor(source: unknown) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function urlFor(source: any) {
   return builder.image(source);
 }
 

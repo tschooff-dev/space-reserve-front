@@ -55,10 +55,10 @@ export default function CustomerServicePage() {
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">
-                  What if I'm running late?
+                  What if I&apos;m running late?
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  Please contact us immediately. We'll do our best to accommodate you, but reservations may be released after 15 minutes.
+                  Please contact us immediately. We&apos;ll do our best to accommodate you, but reservations may be released after 15 minutes.
                 </p>
               </div>
             </div>

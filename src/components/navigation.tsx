@@ -1,13 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [user, setUser] = useState(null)
   const router = useRouter()
   const supabase = createClient()
 

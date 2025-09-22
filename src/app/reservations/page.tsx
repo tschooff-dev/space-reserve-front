@@ -18,25 +18,10 @@ interface Reservation {
 export default function ReservationsPage() {
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<{ id: string; email: string; created_at: string } | null>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
-
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      
-      if (user) {
-        fetchReservations(user.id)
-      } else {
-        setLoading(false)
-      }
-    }
-
-    checkUser()
-  }, [supabase])
 
   const fetchReservations = async (userId: string) => {
     try {
@@ -57,6 +42,21 @@ export default function ReservationsPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      
+      if (user) {
+        fetchReservations(user.id)
+      } else {
+        setLoading(false)
+      }
+    }
+
+    checkUser()
+  }, [supabase])
 
   const handleCancelReservation = async (reservationId: string) => {
     if (!confirm('Are you sure you want to cancel this reservation?')) {

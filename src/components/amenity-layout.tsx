@@ -19,7 +19,7 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
   // Generate seat numbers based on the seating layout
   const generateSeats = () => {
     const seats: string[] = []
-    const { totalSeats, seatsPerSide, seatNumbering } = amenity.seatingLayout
+    const { totalSeats, seatNumbering } = amenity.seatingLayout
     
     if (seatNumbering === 'alphabetical-number') {
       const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
