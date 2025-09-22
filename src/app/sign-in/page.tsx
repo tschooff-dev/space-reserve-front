@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { createClient } from '@/lib/supabase'
+import {useState} from 'react'
+import {Button} from '@/components/ui/button'
+import {createClient} from '@/lib/supabase'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
@@ -16,7 +16,7 @@ export default function SignInPage() {
     setMessage('')
 
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const {error} = await supabase.auth.signInWithOtp({
         email,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
@@ -48,9 +48,7 @@ export default function SignInPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <div className="mb-6">
-            <h2 className="text-center text-2xl font-light text-black">
-              Sign In
-            </h2>
+            <h2 className="text-center text-2xl font-light text-black">Sign In</h2>
             <p className="mt-2 text-center text-sm text-gray-600">
               Enter your email to receive a magic link
             </p>
@@ -87,9 +85,11 @@ export default function SignInPage() {
             </div>
 
             {message && (
-              <div className={`text-sm text-center ${
-                message.includes('Error') ? 'text-red-600' : 'text-green-600'
-              }`}>
+              <div
+                className={`text-sm text-center ${
+                  message.includes('Error') ? 'text-red-600' : 'text-green-600'
+                }`}
+              >
                 {message}
               </div>
             )}
@@ -108,7 +108,7 @@ export default function SignInPage() {
 
             <div className="mt-6">
               <Button
-                onClick={() => window.location.href = '/hotel/aman-new-york'}
+                onClick={() => (window.location.href = '/hotel/aman-new-york')}
                 variant="outline"
                 className="w-full"
               >

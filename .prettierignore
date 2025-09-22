@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+.next/
+.vercel/
+
+# Build outputs
+dist/
+build/
+
+# Environment files
+.env*
+
+# Logs
+*.log
+
+# Package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

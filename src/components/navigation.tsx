@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase'
-import { useRouter } from 'next/navigation'
+import {useState} from 'react'
+import {createClient} from '@/lib/supabase'
+import {useRouter} from 'next/navigation'
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)

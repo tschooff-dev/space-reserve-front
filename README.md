@@ -96,6 +96,7 @@ Example: `https://your-domain.com/hotel/aman-new-york`
 ## 📊 Database Schema
 
 The Supabase `reservations` table includes:
+
 - `user_id` (UUID, references auth.users)
 - `hotel_slug` (text)
 - `amenity_type` (text)
@@ -114,6 +115,7 @@ The app is ready for deployment on Vercel:
 ## 📱 Demo Mode
 
 For testing without authentication:
+
 - Click "Continue as Guest" on the sign-in page
 - This bypasses auth and allows full functionality
 
@@ -142,5 +144,6 @@ For testing without authentication:
 ## 📞 Support
 
 For questions or issues, contact:
+
 - Email: support@spacereserve.com
 - Phone: +1 (555) 123-4567

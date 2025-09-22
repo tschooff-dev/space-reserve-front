@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import {useEffect, useState} from 'react'
+import {useRouter} from 'next/navigation'
+import {Button} from '@/components/ui/button'
 import Navigation from '@/components/navigation'
-import { createClient } from '@/lib/supabase'
+import {createClient} from '@/lib/supabase'
 
 interface Reservation {
   hotelSlug: string
@@ -34,24 +34,24 @@ export default function ConfirmationPage() {
     if (!reservation) return
 
     setLoading(true)
-    
+
     try {
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser()
-      
+      const {
+        data: {user},
+      } = await supabase.auth.getUser()
+
       if (user) {
         // Insert reservation into database
-        const { error } = await supabase
-          .from('reservations')
-          .insert([
-            {
-              user_id: user.id,
-              hotel_slug: reservation.hotelSlug,
-              amenity_type: reservation.amenityType,
-              seat_number: reservation.seats.join(', '),
-              time_block: reservation.timeSlot,
-            },
-          ])
+        const {error} = await supabase.from('reservations').insert([
+          {
+            user_id: user.id,
+            hotel_slug: reservation.hotelSlug,
+            amenity_type: reservation.amenityType,
+            seat_number: reservation.seats.join(', '),
+            time_block: reservation.timeSlot,
+          },
+        ])
 
         if (error) {
           console.error('Error creating reservation:', error)
@@ -89,9 +89,7 @@ export default function ConfirmationPage() {
 
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="bg-white border border-gray-200 rounded-lg p-6">
-          <h1 className="text-2xl font-light text-black mb-6">
-            Confirm Your Reservation
-          </h1>
+          <h1 className="text-2xl font-light text-black mb-6">Confirm Your Reservation</h1>
 
           <div className="space-y-4 mb-8">
             <div>
@@ -125,11 +123,7 @@ export default function ConfirmationPage() {
           </div>
 
           <div className="flex space-x-4">
-            <Button
-              onClick={handleCancel}
-              variant="outline"
-              className="flex-1"
-            >
+            <Button onClick={handleCancel} variant="outline" className="flex-1">
               Cancel
             </Button>
             <Button

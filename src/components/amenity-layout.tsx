@@ -1,17 +1,17 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import {useState} from 'react'
+import {useRouter} from 'next/navigation'
 import Image from 'next/image'
-import { Hotel, Amenity } from '@/lib/sanity'
-import { Button } from '@/components/ui/button'
+import {Hotel, Amenity} from '@/lib/sanity'
+import {Button} from '@/components/ui/button'
 
 interface AmenityLayoutProps {
   hotel: Hotel
   amenity: Amenity
 }
 
-export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
+export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('')
   const router = useRouter()
@@ -19,12 +19,12 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
   // Generate seat numbers based on the seating layout
   const generateSeats = () => {
     const seats: string[] = []
-    const { totalSeats, seatNumbering } = amenity.seatingLayout
-    
+    const {totalSeats, seatNumbering} = amenity.seatingLayout
+
     if (seatNumbering === 'alphabetical-number') {
       const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
       const seatsPerLetter = Math.ceil(totalSeats / letters.length)
-      
+
       for (let i = 0; i < totalSeats; i++) {
         const letterIndex = Math.floor(i / seatsPerLetter)
         const number = (i % seatsPerLetter) + 1
@@ -36,7 +36,7 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
         seats.push(i.toString())
       }
     }
-    
+
     return seats
   }
 
@@ -46,7 +46,7 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
 
   const handleSeatClick = (seatNumber: string) => {
     if (selectedSeats.includes(seatNumber)) {
-      setSelectedSeats(selectedSeats.filter(seat => seat !== seatNumber))
+      setSelectedSeats(selectedSeats.filter((seat) => seat !== seatNumber))
     } else if (selectedSeats.length < 2) {
       setSelectedSeats([...selectedSeats, seatNumber])
     }
@@ -59,15 +59,18 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
   const handleContinue = () => {
     if (selectedSeats.length > 0 && selectedTimeSlot) {
       // Store selection in localStorage for demo purposes
-      localStorage.setItem('reservation', JSON.stringify({
-        hotelSlug: hotel.slug,
-        amenityType: amenity.type,
-        seats: selectedSeats,
-        timeSlot: selectedTimeSlot,
-        hotelName: hotel.name,
-        amenityName: amenity.displayName
-      }))
-      
+      localStorage.setItem(
+        'reservation',
+        JSON.stringify({
+          hotelSlug: hotel.slug,
+          amenityType: amenity.type,
+          seats: selectedSeats,
+          timeSlot: selectedTimeSlot,
+          hotelName: hotel.name,
+          amenityName: amenity.displayName,
+        })
+      )
+
       router.push(`/hotel/${hotel.slug}/amenity/${amenity.type}/confirm`)
     }
   }
@@ -76,19 +79,15 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-light text-black mb-2">
-          {amenity.displayName}
-        </h1>
-        <p className="text-gray-600">
-          {hotel.name}
-        </p>
+        <h1 className="text-3xl font-light text-black mb-2">{amenity.displayName}</h1>
+        <p className="text-gray-600">{hotel.name}</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Layout Visualization */}
         <div className="space-y-6">
           <h2 className="text-xl font-medium text-black">Select Your Seats</h2>
-          
+
           {/* Pool/Amenity Layout */}
           <div className="relative bg-blue-100 p-8 rounded-lg">
             {amenity.layoutImage && (
@@ -100,7 +99,7 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
                 className="mx-auto mb-4"
               />
             )}
-            
+
             {/* Seats Layout */}
             <div className="flex justify-between items-center">
               {/* Left Side Seats */}
@@ -122,9 +121,7 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
 
               {/* Pool/Amenity Area */}
               <div className="flex-1 mx-8 bg-blue-200 rounded-lg h-32 flex items-center justify-center">
-                <span className="text-blue-800 font-medium">
-                  {amenity.displayName}
-                </span>
+                <span className="text-blue-800 font-medium">{amenity.displayName}</span>
               </div>
 
               {/* Right Side Seats */}
@@ -150,9 +147,7 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
           {selectedSeats.length > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-medium text-black mb-2">Selected Seats:</h3>
-              <p className="text-gray-700">
-                {selectedSeats.join(', ')}
-              </p>
+              <p className="text-gray-700">{selectedSeats.join(', ')}</p>
             </div>
           )}
         </div>
@@ -160,7 +155,7 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
         {/* Time Selection */}
         <div className="space-y-6">
           <h2 className="text-xl font-medium text-black">Select Time Slot</h2>
-          
+
           <div className="grid gap-3">
             {amenity.timeSlots.map((timeSlot) => (
               <button
@@ -173,9 +168,7 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
                 }`}
               >
                 <div className="font-medium">{timeSlot}</div>
-                <div className="text-sm opacity-75">
-                  Available ({amenity.maxReservations} max)
-                </div>
+                <div className="text-sm opacity-75">Available ({amenity.maxReservations} max)</div>
               </button>
             ))}
           </div>
@@ -184,9 +177,7 @@ export default function AmenityLayout({ hotel, amenity }: AmenityLayoutProps) {
           {amenity.specialInstructions && (
             <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
               <h3 className="font-medium text-yellow-800 mb-2">Important Notes:</h3>
-              <p className="text-yellow-700 text-sm">
-                {amenity.specialInstructions}
-              </p>
+              <p className="text-yellow-700 text-sm">{amenity.specialInstructions}</p>
             </div>
           )}
 

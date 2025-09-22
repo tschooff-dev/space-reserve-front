@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { createClient } from '@/lib/supabase'
-import { Button } from '@/components/ui/button'
+import {useEffect, useState, useCallback, Suspense} from 'react'
+import {useRouter, useSearchParams} from 'next/navigation'
+import {createClient} from '@/lib/supabase'
+import {Button} from '@/components/ui/button'
 import Navigation from '@/components/navigation'
+import type {User} from '@supabase/supabase-js'
 
 interface Reservation {
   id: string
@@ -15,39 +16,44 @@ interface Reservation {
   created_at: string
 }
 
-export default function ReservationsPage() {
+function ReservationsContent() {
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<{ id: string; email: string; created_at: string } | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
 
-  const fetchReservations = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('reservations')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
+  const fetchReservations = useCallback(
+    async (userId: string) => {
+      try {
+        const {data, error} = await supabase
+          .from('reservations')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', {ascending: false})
 
-      if (error) {
-        console.error('Error fetching reservations:', error)
-      } else {
-        setReservations(data || [])
+        if (error) {
+          console.error('Error fetching reservations:', error)
+        } else {
+          setReservations(data || [])
+        }
+      } catch (error) {
+        console.error('Error:', error)
+      } finally {
+        setLoading(false)
       }
-    } catch (error) {
-      console.error('Error:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    [supabase]
+  )
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: {user},
+      } = await supabase.auth.getUser()
       setUser(user)
-      
+
       if (user) {
         fetchReservations(user.id)
       } else {
@@ -56,7 +62,7 @@ export default function ReservationsPage() {
     }
 
     checkUser()
-  }, [supabase])
+  }, [supabase, fetchReservations])
 
   const handleCancelReservation = async (reservationId: string) => {
     if (!confirm('Are you sure you want to cancel this reservation?')) {
@@ -64,10 +70,7 @@ export default function ReservationsPage() {
     }
 
     try {
-      const { error } = await supabase
-        .from('reservations')
-        .delete()
-        .eq('id', reservationId)
+      const {error} = await supabase.from('reservations').delete().eq('id', reservationId)
 
       if (error) {
         console.error('Error canceling reservation:', error)
@@ -123,26 +126,18 @@ export default function ReservationsPage() {
       <Navigation />
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-light text-black mb-8">
-          My Reservations
-        </h1>
+        <h1 className="text-3xl font-light text-black mb-8">My Reservations</h1>
 
         {confirmed && (
           <div className="bg-green-50 border border-green-200 p-4 rounded-lg mb-6">
-            <p className="text-green-800">
-              ✅ Your reservation has been confirmed!
-            </p>
+            <p className="text-green-800">✅ Your reservation has been confirmed!</p>
           </div>
         )}
 
         {reservations.length === 0 ? (
           <div className="text-center py-12">
-            <h2 className="text-xl font-light text-gray-600 mb-4">
-              No reservations found
-            </h2>
-            <p className="text-gray-500 mb-6">
-              Start by making a reservation at your hotel
-            </p>
+            <h2 className="text-xl font-light text-gray-600 mb-4">No reservations found</h2>
+            <p className="text-gray-500 mb-6">Start by making a reservation at your hotel</p>
             <Button
               onClick={() => router.push('/hotel/aman-new-york')}
               className="bg-black text-white hover:bg-gray-800"
@@ -153,10 +148,7 @@ export default function ReservationsPage() {
         ) : (
           <div className="space-y-4">
             {reservations.map((reservation) => (
-              <div
-                key={reservation.id}
-                className="border border-gray-200 rounded-lg p-6"
-              >
+              <div key={reservation.id} className="border border-gray-200 rounded-lg p-6">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <h3 className="text-lg font-medium text-black capitalize">
@@ -195,5 +187,26 @@ export default function ReservationsPage() {
         )}
       </div>
     </div>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-white">
+      <Navigation />
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-light text-black mb-4">Loading...</h1>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function ReservationsPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ReservationsContent />
+    </Suspense>
   )
 }
