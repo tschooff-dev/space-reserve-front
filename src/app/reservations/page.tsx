@@ -177,8 +177,10 @@ function ReservationsContent() {
     <div className="min-h-screen bg-white page-enter">
       <Navigation />
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up">My Reservations</h1>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <h1 className="text-2xl sm:text-3xl font-aileron-light text-black mb-6 sm:mb-8 slide-up">
+          My Reservations
+        </h1>
 
         {confirmed && (
           <div className="bg-green-50 border border-green-200 p-4 rounded-lg mb-6 fade-in">
@@ -200,7 +202,7 @@ function ReservationsContent() {
             </Button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {reservations.map((reservation, index) => (
               <Card
                 key={reservation.id}
@@ -208,44 +210,48 @@ function ReservationsContent() {
                 style={{animationDelay: `${index * 0.1}s`}}
               >
                 <CardHeader>
-                  <div className="flex gap-4">
-                    {/* Hotel Image */}
-                    {reservation.hotel?.heroImage && (
-                      <div className="flex-shrink-0 w-24 h-24 relative">
-                        <Image
-                          src={reservation.hotel.heroImage}
-                          alt={reservation.hotel.heroImageAlt || reservation.hotel.name}
-                          fill
-                          className="object-cover rounded-lg"
-                        />
-                      </div>
-                    )}
+                  {/* Mobile-first responsive layout */}
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    {/* Images - Stack on mobile, side-by-side on desktop */}
+                    <div className="flex gap-3 sm:gap-4">
+                      {/* Hotel Image */}
+                      {reservation.hotel?.heroImage && (
+                        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 relative">
+                          <Image
+                            src={reservation.hotel.heroImage}
+                            alt={reservation.hotel.heroImageAlt || reservation.hotel.name}
+                            fill
+                            className="object-cover rounded-lg"
+                          />
+                        </div>
+                      )}
 
-                    {/* Amenity Image */}
-                    {reservation.amenity?.layoutImage && (
-                      <div className="flex-shrink-0 w-24 h-24 relative">
-                        <Image
-                          src={reservation.amenity.layoutImage}
-                          alt={
-                            reservation.amenity.layoutImageAlt || reservation.amenity.displayName
-                          }
-                          fill
-                          className="object-cover rounded-lg"
-                        />
-                      </div>
-                    )}
+                      {/* Amenity Image */}
+                      {reservation.amenity?.layoutImage && (
+                        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 relative">
+                          <Image
+                            src={reservation.amenity.layoutImage}
+                            alt={
+                              reservation.amenity.layoutImageAlt || reservation.amenity.displayName
+                            }
+                            fill
+                            className="object-cover rounded-lg"
+                          />
+                        </div>
+                      )}
+                    </div>
 
-                    {/* Reservation Details */}
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg font-aileron-regular text-black capitalize">
+                    {/* Reservation Details - Full width on mobile */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-base sm:text-lg font-aileron-regular text-black capitalize truncate">
                             {reservation.amenity?.displayName || reservation.amenity_type}
                           </CardTitle>
-                          <p className="text-gray-600 capitalize font-foundation-sans">
+                          <p className="text-sm sm:text-base text-gray-600 capitalize font-foundation-sans truncate">
                             {reservation.hotel?.name || reservation.hotel_slug.replace('-', ' ')}
                           </p>
-                          <div className="mt-2 space-y-1">
+                          <div className="mt-2 space-y-2">
                             <div className="flex gap-2 flex-wrap">
                               <Badge variant="secondary" className="text-xs">
                                 Seat {reservation.seat_number}
@@ -254,18 +260,19 @@ function ReservationsContent() {
                                 {reservation.time_block}
                               </Badge>
                             </div>
-                            <p className="text-sm text-gray-500 font-foundation-sans">
+                            <p className="text-xs sm:text-sm text-gray-500 font-foundation-sans">
                               <span className="font-medium">Booked:</span>{' '}
                               {new Date(reservation.created_at).toLocaleDateString()}
                             </p>
                           </div>
                         </div>
-                        <div className="ml-4">
+                        {/* Cancel button - Full width on mobile, auto on desktop */}
+                        <div className="w-full sm:w-auto sm:ml-4">
                           <Button
                             onClick={() => handleCancelReservation(reservation.id)}
                             variant="outline"
                             size="sm"
-                            className="text-red-600 border-red-200 hover:bg-red-50 transition-all duration-200 hover-lift"
+                            className="w-full sm:w-auto text-red-600 border-red-200 hover:bg-red-50 transition-all duration-200 hover-lift"
                           >
                             Cancel
                           </Button>
