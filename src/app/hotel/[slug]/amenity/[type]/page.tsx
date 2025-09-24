@@ -11,9 +11,10 @@ interface AmenityPageProps {
 }
 
 export default async function AmenityPage({params}: AmenityPageProps) {
+  const {slug, type} = await params
   const [hotel, amenity]: [Hotel | null, Amenity | null] = await Promise.all([
-    sanityClient.fetch(queries.getHotelBySlug, {slug: params.slug}),
-    sanityClient.fetch(queries.getAmenityByType, {type: params.type}),
+    sanityClient.fetch(queries.getHotelBySlug, {slug}),
+    sanityClient.fetch(queries.getAmenityByType, {type}),
   ])
 
   if (!hotel || !amenity) {

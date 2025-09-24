@@ -11,8 +11,9 @@ interface HotelPageProps {
 }
 
 export default async function HotelPage({params}: HotelPageProps) {
+  const {slug} = await params
   const hotel: Hotel | null = await sanityClient.fetch(queries.getHotelBySlug, {
-    slug: params.slug,
+    slug,
   })
 
   if (!hotel) {

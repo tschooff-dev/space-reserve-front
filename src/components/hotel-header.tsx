@@ -7,7 +7,7 @@ interface HotelHeaderProps {
 
 export default function HotelHeader({hotel}: HotelHeaderProps) {
   return (
-    <div className="relative h-96 w-full">
+    <div className="relative h-[60vh] w-full">
       {hotel.heroImage && (
         <Image
           src={hotel.heroImage}
@@ -19,10 +19,10 @@ export default function HotelHeader({hotel}: HotelHeaderProps) {
       )}
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-40" />
+      <div className="absolute inset-0 bg-black/40 z-10" />
 
       {/* Content */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex items-center justify-center z-20">
         <div className="text-center text-white">
           <h1 className="text-brand-hero mb-4">{hotel.name}</h1>
           {hotel.description && (
