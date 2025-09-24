@@ -2,6 +2,8 @@
 
 import {useState} from 'react'
 import {Button} from '@/components/ui/button'
+import {Input} from '@/components/ui/input'
+import {Alert, AlertDescription} from '@/components/ui/alert'
 import {createClient} from '@/lib/supabase'
 
 export default function SignInPage() {
@@ -63,7 +65,7 @@ export default function SignInPage() {
                 Email address
               </label>
               <div className="mt-1">
-                <input
+                <Input
                   id="email"
                   name="email"
                   type="email"
@@ -71,7 +73,6 @@ export default function SignInPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm"
                   placeholder="Enter your email"
                 />
               </div>
@@ -88,13 +89,11 @@ export default function SignInPage() {
             </div>
 
             {message && (
-              <div
-                className={`text-sm text-center ${
-                  message.includes('Error') ? 'text-red-600' : 'text-green-600'
-                }`}
-              >
-                {message}
-              </div>
+              <Alert className={message.includes('Error') ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'}>
+                <AlertDescription className={message.includes('Error') ? 'text-red-600' : 'text-green-600'}>
+                  {message}
+                </AlertDescription>
+              </Alert>
             )}
           </form>
 

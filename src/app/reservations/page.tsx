@@ -4,6 +4,8 @@ import {useEffect, useState, useCallback, Suspense} from 'react'
 import {useRouter, useSearchParams} from 'next/navigation'
 import {createClient} from '@/lib/supabase'
 import {Button} from '@/components/ui/button'
+import {Card, CardHeader, CardTitle} from '@/components/ui/card'
+import {Badge} from '@/components/ui/badge'
 import Navigation from '@/components/navigation'
 import Loading from '@/components/loading'
 import Image from 'next/image'
@@ -200,73 +202,77 @@ function ReservationsContent() {
         ) : (
           <div className="space-y-4">
             {reservations.map((reservation, index) => (
-              <div
+              <Card
                 key={reservation.id}
-                className="border border-gray-200 rounded-lg p-6 hover-glow transition-all duration-200 slide-up"
+                className="hover-glow transition-all duration-200 slide-up"
                 style={{animationDelay: `${index * 0.1}s`}}
               >
-                <div className="flex gap-4">
-                  {/* Hotel Image */}
-                  {reservation.hotel?.heroImage && (
-                    <div className="flex-shrink-0 w-24 h-24 relative">
-                      <Image
-                        src={reservation.hotel.heroImage}
-                        alt={reservation.hotel.heroImageAlt || reservation.hotel.name}
-                        fill
-                        className="object-cover rounded-lg"
-                      />
-                    </div>
-                  )}
-                  
-                  {/* Amenity Image */}
-                  {reservation.amenity?.layoutImage && (
-                    <div className="flex-shrink-0 w-24 h-24 relative">
-                      <Image
-                        src={reservation.amenity.layoutImage}
-                        alt={reservation.amenity.layoutImageAlt || reservation.amenity.displayName}
-                        fill
-                        className="object-cover rounded-lg"
-                      />
-                    </div>
-                  )}
-
-                  {/* Reservation Details */}
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-aileron-regular text-black capitalize">
-                          {reservation.amenity?.displayName || reservation.amenity_type}
-                        </h3>
-                        <p className="text-gray-600 capitalize font-foundation-sans">
-                          {reservation.hotel?.name || reservation.hotel_slug.replace('-', ' ')}
-                        </p>
-                        <div className="mt-2 space-y-1">
-                          <p className="text-sm text-gray-500 font-foundation-sans">
-                            <span className="font-medium">Seats:</span> {reservation.seat_number}
-                          </p>
-                          <p className="text-sm text-gray-500 font-foundation-sans">
-                            <span className="font-medium">Time:</span> {reservation.time_block}
-                          </p>
-                          <p className="text-sm text-gray-500 font-foundation-sans">
-                            <span className="font-medium">Booked:</span>{' '}
-                            {new Date(reservation.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
+                <CardHeader>
+                  <div className="flex gap-4">
+                    {/* Hotel Image */}
+                    {reservation.hotel?.heroImage && (
+                      <div className="flex-shrink-0 w-24 h-24 relative">
+                        <Image
+                          src={reservation.hotel.heroImage}
+                          alt={reservation.hotel.heroImageAlt || reservation.hotel.name}
+                          fill
+                          className="object-cover rounded-lg"
+                        />
                       </div>
-                      <div className="ml-4">
-                        <Button
-                          onClick={() => handleCancelReservation(reservation.id)}
-                          variant="outline"
-                          size="sm"
-                          className="text-red-600 border-red-200 hover:bg-red-50 transition-all duration-200 hover-lift"
-                        >
-                          Cancel
-                        </Button>
+                    )}
+                    
+                    {/* Amenity Image */}
+                    {reservation.amenity?.layoutImage && (
+                      <div className="flex-shrink-0 w-24 h-24 relative">
+                        <Image
+                          src={reservation.amenity.layoutImage}
+                          alt={reservation.amenity.layoutImageAlt || reservation.amenity.displayName}
+                          fill
+                          className="object-cover rounded-lg"
+                        />
+                      </div>
+                    )}
+
+                    {/* Reservation Details */}
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <CardTitle className="text-lg font-aileron-regular text-black capitalize">
+                            {reservation.amenity?.displayName || reservation.amenity_type}
+                          </CardTitle>
+                          <p className="text-gray-600 capitalize font-foundation-sans">
+                            {reservation.hotel?.name || reservation.hotel_slug.replace('-', ' ')}
+                          </p>
+                          <div className="mt-2 space-y-1">
+                            <div className="flex gap-2 flex-wrap">
+                              <Badge variant="secondary" className="text-xs">
+                                Seat {reservation.seat_number}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs">
+                                {reservation.time_block}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-gray-500 font-foundation-sans">
+                              <span className="font-medium">Booked:</span>{' '}
+                              {new Date(reservation.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="ml-4">
+                          <Button
+                            onClick={() => handleCancelReservation(reservation.id)}
+                            variant="outline"
+                            size="sm"
+                            className="text-red-600 border-red-200 hover:bg-red-50 transition-all duration-200 hover-lift"
+                          >
+                            Cancel
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </CardHeader>
+              </Card>
             ))}
           </div>
         )}

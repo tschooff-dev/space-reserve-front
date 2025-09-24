@@ -1,4 +1,5 @@
 import React from 'react'
+import {Skeleton} from '@/components/ui/skeleton'
 
 interface LoadingProps {
   text?: string
@@ -42,7 +43,7 @@ export function LoadingDots({className = ''}: {className?: string}) {
 }
 
 export function LoadingSkeleton({className = ''}: {className?: string}) {
-  return <div className={`skeleton ${className}`}></div>
+  return <Skeleton className={className} />
 }
 
 export function LoadingCompact({text = 'Loading...', size = 'md', className = ''}: LoadingProps) {

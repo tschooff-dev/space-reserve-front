@@ -4,6 +4,7 @@ import {useEffect, useState, Suspense} from 'react'
 import {createClient} from '@/lib/supabase'
 import Navigation from '@/components/navigation'
 import {Button} from '@/components/ui/button'
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import Loading from '@/components/loading'
 import type {User} from '@supabase/supabase-js'
 
@@ -51,16 +52,16 @@ function AccountContent() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up">Account</h1>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-6 hover-glow transition-all duration-200">
+        <Card className="hover-glow transition-all duration-200">
           {user ? (
-            <div className="space-y-4 fade-in">
+            <CardContent className="space-y-4 fade-in">
               <div className="slide-up" style={{animationDelay: '0.1s'}}>
-                <h2 className="font-aileron-regular text-gray-900 mb-2">Email</h2>
+                <CardTitle className="text-lg font-aileron-regular text-gray-900 mb-2">Email</CardTitle>
                 <p className="text-gray-600 font-foundation-sans">{user.email}</p>
               </div>
 
               <div className="slide-up" style={{animationDelay: '0.2s'}}>
-                <h2 className="font-aileron-regular text-gray-900 mb-2">Member Since</h2>
+                <CardTitle className="text-lg font-aileron-regular text-gray-900 mb-2">Member Since</CardTitle>
                 <p className="text-gray-600 font-foundation-sans">
                   {new Date(user.created_at).toLocaleDateString()}
                 </p>
@@ -78,9 +79,9 @@ function AccountContent() {
                   Sign Out
                 </Button>
               </div>
-            </div>
+            </CardContent>
           ) : (
-            <div className="text-center fade-in">
+            <CardContent className="text-center fade-in">
               <p className="text-gray-600 mb-4 font-foundation-sans">
                 Please sign in to view your account information.
               </p>
@@ -90,9 +91,9 @@ function AccountContent() {
               >
                 Sign In
               </Button>
-            </div>
+            </CardContent>
           )}
-        </div>
+        </Card>
       </div>
     </div>
   )
