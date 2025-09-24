@@ -25,28 +25,25 @@ function ReservationsContent() {
   const searchParams = useSearchParams()
   const supabase = createClient()
 
-  const fetchReservations = useCallback(
-    async (userId: string) => {
-      try {
-        const {data, error} = await supabase
-          .from('reservations')
-          .select('*')
-          .eq('user_id', userId)
-          .order('created_at', {ascending: false})
+  const fetchReservations = useCallback(async (userId: string) => {
+    try {
+      const {data, error} = await supabase
+        .from('reservations')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', {ascending: false})
 
-        if (error) {
-          console.error('Error fetching reservations:', error)
-        } else {
-          setReservations(data || [])
-        }
-      } catch (error) {
-        console.error('Error:', error)
-      } finally {
-        setLoading(false)
+      if (error) {
+        console.error('Error fetching reservations:', error)
+      } else {
+        setReservations(data || [])
       }
-    },
-    []
-  )
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
     const checkUser = async () => {
@@ -148,7 +145,9 @@ function ReservationsContent() {
         {reservations.length === 0 ? (
           <div className="text-center py-12 fade-in">
             <h2 className="text-xl font-aileron-light text-gray-600 mb-4">No reservations found</h2>
-            <p className="text-gray-500 mb-6 font-foundation-sans">Start by making a reservation at your hotel</p>
+            <p className="text-gray-500 mb-6 font-foundation-sans">
+              Start by making a reservation at your hotel
+            </p>
             <Button
               onClick={() => router.push('/hotel/aman-new-york')}
               className="bg-black text-white hover:bg-gray-800 transition-all duration-200 hover-lift"
@@ -159,10 +158,10 @@ function ReservationsContent() {
         ) : (
           <div className="space-y-4">
             {reservations.map((reservation, index) => (
-              <div 
-                key={reservation.id} 
+              <div
+                key={reservation.id}
                 className="border border-gray-200 rounded-lg p-6 hover-glow transition-all duration-200 slide-up"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{animationDelay: `${index * 0.1}s`}}
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">

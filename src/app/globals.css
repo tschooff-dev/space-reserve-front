@@ -128,21 +128,21 @@
   .font-aileron {
     font-family: var(--font-aileron), 'Inter', system-ui, sans-serif;
   }
-  
+
   .font-aileron-light {
     font-family: var(--font-aileron), 'Inter', system-ui, sans-serif;
     font-weight: 300;
   }
-  
+
   .font-aileron-regular {
     font-family: var(--font-aileron), 'Inter', system-ui, sans-serif;
     font-weight: 400;
   }
-  
+
   .font-foundation-sans {
     font-family: var(--font-foundation-sans), 'Inter', system-ui, sans-serif;
   }
-  
+
   /* Typography Scale for Brand Guidelines */
   .text-brand-hero {
     font-size: 2.25rem;
@@ -150,27 +150,27 @@
     font-family: var(--font-aileron), 'Inter', system-ui, sans-serif;
     font-weight: 300;
   }
-  
+
   @media (min-width: 768px) {
     .text-brand-hero {
       font-size: 3.75rem;
       line-height: 1;
     }
   }
-  
+
   .text-brand-title {
     font-size: 1.5rem;
     line-height: 2rem;
     font-family: var(--font-aileron), 'Inter', system-ui, sans-serif;
     font-weight: 400;
   }
-  
+
   .text-brand-body {
     font-size: 1rem;
     line-height: 1.5rem;
     font-family: var(--font-foundation-sans), 'Inter', system-ui, sans-serif;
   }
-  
+
   .text-brand-caption {
     font-size: 0.875rem;
     line-height: 1.25rem;

@@ -61,7 +61,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${aileron.variable} ${foundationSans.variable} font-sans antialiased`}>{children}</body>
+      <body
+        className={`${inter.variable} ${aileron.variable} ${foundationSans.variable} font-sans antialiased`}
+      >
+        {children}
+      </body>
     </html>
   )
 }

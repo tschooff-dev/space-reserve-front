@@ -56,7 +56,10 @@ export default function SignInPage() {
 
           <form className="space-y-6" onSubmit={handleSignIn}>
             <div>
-              <label htmlFor="email" className="block text-sm font-foundation-sans font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-foundation-sans font-medium text-gray-700"
+              >
                 Email address
               </label>
               <div className="mt-1">

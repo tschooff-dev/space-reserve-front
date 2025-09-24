@@ -54,17 +54,19 @@ function AccountContent() {
         <div className="bg-white border border-gray-200 rounded-lg p-6 hover-glow transition-all duration-200">
           {user ? (
             <div className="space-y-4 fade-in">
-              <div className="slide-up" style={{ animationDelay: '0.1s' }}>
+              <div className="slide-up" style={{animationDelay: '0.1s'}}>
                 <h2 className="font-aileron-regular text-gray-900 mb-2">Email</h2>
                 <p className="text-gray-600 font-foundation-sans">{user.email}</p>
               </div>
 
-              <div className="slide-up" style={{ animationDelay: '0.2s' }}>
+              <div className="slide-up" style={{animationDelay: '0.2s'}}>
                 <h2 className="font-aileron-regular text-gray-900 mb-2">Member Since</h2>
-                <p className="text-gray-600 font-foundation-sans">{new Date(user.created_at).toLocaleDateString()}</p>
+                <p className="text-gray-600 font-foundation-sans">
+                  {new Date(user.created_at).toLocaleDateString()}
+                </p>
               </div>
 
-              <div className="pt-4 slide-up" style={{ animationDelay: '0.3s' }}>
+              <div className="pt-4 slide-up" style={{animationDelay: '0.3s'}}>
                 <Button
                   onClick={async () => {
                     await supabase.auth.signOut()
@@ -79,7 +81,9 @@ function AccountContent() {
             </div>
           ) : (
             <div className="text-center fade-in">
-              <p className="text-gray-600 mb-4 font-foundation-sans">Please sign in to view your account information.</p>
+              <p className="text-gray-600 mb-4 font-foundation-sans">
+                Please sign in to view your account information.
+              </p>
               <Button
                 onClick={() => (window.location.href = '/sign-in')}
                 className="bg-black text-white hover:bg-gray-800 transition-all duration-200 hover-lift"
