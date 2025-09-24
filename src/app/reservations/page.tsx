@@ -220,13 +220,15 @@ function ReservationsContent() {
                         />
                       </div>
                     )}
-                    
+
                     {/* Amenity Image */}
                     {reservation.amenity?.layoutImage && (
                       <div className="flex-shrink-0 w-24 h-24 relative">
                         <Image
                           src={reservation.amenity.layoutImage}
-                          alt={reservation.amenity.layoutImageAlt || reservation.amenity.displayName}
+                          alt={
+                            reservation.amenity.layoutImageAlt || reservation.amenity.displayName
+                          }
                           fill
                           className="object-cover rounded-lg"
                         />

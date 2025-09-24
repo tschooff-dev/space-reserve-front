@@ -1,13 +1,10 @@
 import {sanityClient} from '@/lib/sanity'
 import {NextRequest, NextResponse} from 'next/server'
 
-export async function GET(
-  request: NextRequest,
-  {params}: {params: {slug: string}}
-) {
+export async function GET(request: NextRequest, {params}: {params: Promise<{slug: string}>}) {
   try {
     const {slug} = await params
-    
+
     const hotel = await sanityClient.fetch(
       `*[_type == "hotel" && slug.current == $slug][0] {
         name,

@@ -4,7 +4,7 @@ import {useEffect, useState, Suspense} from 'react'
 import {createClient} from '@/lib/supabase'
 import Navigation from '@/components/navigation'
 import {Button} from '@/components/ui/button'
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
+import {Card, CardContent, CardTitle} from '@/components/ui/card'
 import Loading from '@/components/loading'
 import type {User} from '@supabase/supabase-js'
 
@@ -56,12 +56,16 @@ function AccountContent() {
           {user ? (
             <CardContent className="space-y-4 fade-in">
               <div className="slide-up" style={{animationDelay: '0.1s'}}>
-                <CardTitle className="text-lg font-aileron-regular text-gray-900 mb-2">Email</CardTitle>
+                <CardTitle className="text-lg font-aileron-regular text-gray-900 mb-2">
+                  Email
+                </CardTitle>
                 <p className="text-gray-600 font-foundation-sans">{user.email}</p>
               </div>
 
               <div className="slide-up" style={{animationDelay: '0.2s'}}>
-                <CardTitle className="text-lg font-aileron-regular text-gray-900 mb-2">Member Since</CardTitle>
+                <CardTitle className="text-lg font-aileron-regular text-gray-900 mb-2">
+                  Member Since
+                </CardTitle>
                 <p className="text-gray-600 font-foundation-sans">
                   {new Date(user.created_at).toLocaleDateString()}
                 </p>

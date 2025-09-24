@@ -89,8 +89,16 @@ export default function SignInPage() {
             </div>
 
             {message && (
-              <Alert className={message.includes('Error') ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'}>
-                <AlertDescription className={message.includes('Error') ? 'text-red-600' : 'text-green-600'}>
+              <Alert
+                className={
+                  message.includes('Error')
+                    ? 'border-red-200 bg-red-50'
+                    : 'border-green-200 bg-green-50'
+                }
+              >
+                <AlertDescription
+                  className={message.includes('Error') ? 'text-red-600' : 'text-green-600'}
+                >
                   {message}
                 </AlertDescription>
               </Alert>
