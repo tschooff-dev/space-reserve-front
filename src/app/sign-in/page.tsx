@@ -40,7 +40,7 @@ export default function SignInPage() {
       {/* Logo */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-black">LOGO</h1>
+          <h1 className="text-2xl font-aileron-regular text-black">LOGO</h1>
         </div>
       </div>
 
@@ -48,15 +48,15 @@ export default function SignInPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <div className="mb-6">
-            <h2 className="text-center text-2xl font-light text-black">Sign In</h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
+            <h2 className="text-center text-2xl font-aileron-light text-black">Sign In</h2>
+            <p className="mt-2 text-center text-sm font-foundation-sans text-gray-600">
               Enter your email to receive a magic link
             </p>
           </div>
 
           <form className="space-y-6" onSubmit={handleSignIn}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-foundation-sans font-medium text-gray-700">
                 Email address
               </label>
               <div className="mt-1">
