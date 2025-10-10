@@ -37,7 +37,7 @@ function AccountContent() {
         <Navigation />
         <div className="max-w-4xl mx-auto px-4 py-8">
           <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up">Account</h1>
-          <div className="bg-white border border-gray-200 rounded-lg p-6 flex items-center justify-center min-h-[400px]">
+          <div className="bg-white border border-black rounded-lg p-6 flex items-center justify-center min-h-[400px]">
             <Loading text="Loading your account..." size="lg" />
           </div>
         </div>
@@ -56,17 +56,17 @@ function AccountContent() {
           {user ? (
             <CardContent className="space-y-4 fade-in">
               <div className="slide-up" style={{animationDelay: '0.1s'}}>
-                <CardTitle className="text-lg font-aileron-regular text-gray-900 mb-2">
+                <CardTitle className="text-lg font-aileron-regular text-black mb-2">
                   Email
                 </CardTitle>
-                <p className="text-gray-600 font-foundation-sans">{user.email}</p>
+                <p className="text-black/70 font-foundation-sans">{user.email}</p>
               </div>
 
               <div className="slide-up" style={{animationDelay: '0.2s'}}>
-                <CardTitle className="text-lg font-aileron-regular text-gray-900 mb-2">
+                <CardTitle className="text-lg font-aileron-regular text-black mb-2">
                   Member Since
                 </CardTitle>
-                <p className="text-gray-600 font-foundation-sans">
+                <p className="text-black/70 font-foundation-sans">
                   {new Date(user.created_at).toLocaleDateString()}
                 </p>
               </div>
@@ -78,7 +78,7 @@ function AccountContent() {
                     window.location.href = '/sign-in'
                   }}
                   variant="outline"
-                  className="text-red-600 border-red-200 hover:bg-red-50 transition-all duration-200 hover-lift"
+                  className="text-black border-black hover:bg-black hover:text-white transition-all duration-200 hover-lift"
                 >
                   Sign Out
                 </Button>
@@ -86,12 +86,12 @@ function AccountContent() {
             </CardContent>
           ) : (
             <CardContent className="text-center fade-in">
-              <p className="text-gray-600 mb-4 font-foundation-sans">
+              <p className="text-black/70 mb-4 font-foundation-sans">
                 Please sign in to view your account information.
               </p>
               <Button
                 onClick={() => (window.location.href = '/sign-in')}
-                className="bg-black text-white hover:bg-gray-800 transition-all duration-200 hover-lift"
+                className="bg-black text-white hover:bg-black/90 transition-all duration-200 hover-lift"
               >
                 Sign In
               </Button>

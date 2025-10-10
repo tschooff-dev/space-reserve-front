@@ -67,7 +67,7 @@ export default function Navigation() {
                 router.push('/account')
                 setIsMenuOpen(false)
               }}
-              className="text-white hover:text-gray-300 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
             >
               Account
             </button>
@@ -76,7 +76,7 @@ export default function Navigation() {
                 router.push('/reservations')
                 setIsMenuOpen(false)
               }}
-              className="text-white hover:text-gray-300 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
             >
               Reservations
             </button>
@@ -85,7 +85,7 @@ export default function Navigation() {
                 router.push('/customer-service')
                 setIsMenuOpen(false)
               }}
-              className="text-white hover:text-gray-300 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
             >
               Customer Service
             </button>
@@ -95,7 +95,7 @@ export default function Navigation() {
                 handleSignOut()
                 setIsMenuOpen(false)
               }}
-              className="text-white hover:text-gray-300 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
             >
               Log out
             </button>

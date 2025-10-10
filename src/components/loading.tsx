@@ -19,7 +19,7 @@ export default function Loading({text = 'Loading...', size = 'md', className = '
       className={`flex flex-col items-center justify-center space-y-3 min-h-[200px] py-8 ${className}`}
     >
       <div className={`loading-spinner ${sizeClasses[size]}`}></div>
-      <p className="font-foundation-sans text-gray-600 text-lg">{text}</p>
+      <p className="font-foundation-sans text-black/70 text-lg">{text}</p>
     </div>
   )
 }
@@ -56,7 +56,7 @@ export function LoadingCompact({text = 'Loading...', size = 'md', className = ''
   return (
     <div className={`flex items-center space-x-3 ${className}`}>
       <div className={`loading-spinner ${sizeClasses[size]}`}></div>
-      <p className="font-foundation-sans text-gray-600">{text}</p>
+      <p className="font-foundation-sans text-black/70">{text}</p>
     </div>
   )
 }

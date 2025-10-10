@@ -19,7 +19,7 @@ export default function AmenityCard({amenity, hotelSlug}: AmenityCardProps) {
 
   return (
     <Card
-      className="border-2 border-black cursor-pointer hover:bg-gray-50 transition-colors"
+      className="border-2 border-black cursor-pointer hover:bg-black/5 transition-colors"
       onClick={handleClick}
     >
       <CardHeader>
@@ -30,13 +30,13 @@ export default function AmenityCard({amenity, hotelSlug}: AmenityCardProps) {
 
       <CardContent className="space-y-4">
         {amenity.description && (
-          <p className="text-gray-600 text-sm font-foundation-sans text-center">
+          <p className="text-black/70 text-sm font-foundation-sans text-center">
             {amenity.description}
           </p>
         )}
 
         <div className="space-y-2">
-          <div className="text-xs font-foundation-sans text-gray-500">Available Time Slots:</div>
+          <div className="text-xs font-foundation-sans text-black/60">Available Time Slots:</div>
           <div className="flex flex-wrap gap-1">
             {amenity.timeSlots.slice(0, 3).map((slot, index) => (
               <Badge key={index} variant="secondary" className="text-xs">

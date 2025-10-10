@@ -144,7 +144,7 @@ function ReservationsContent() {
         <Navigation />
         <div className="max-w-4xl mx-auto px-4 py-8">
           <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up">My Reservations</h1>
-          <div className="bg-white border border-gray-200 rounded-lg p-6 flex items-center justify-center min-h-[400px]">
+          <div className="bg-white border border-black rounded-lg p-6 flex items-center justify-center min-h-[400px]">
             <Loading text="Loading your reservations..." size="lg" />
           </div>
         </div>
@@ -163,7 +163,7 @@ function ReservationsContent() {
             </h1>
             <Button
               onClick={() => router.push('/sign-in')}
-              className="bg-black text-white hover:bg-gray-800 transition-all duration-200 hover-lift"
+              className="bg-black text-white hover:bg-black/90 transition-all duration-200 hover-lift"
             >
               Sign In
             </Button>
@@ -183,20 +183,20 @@ function ReservationsContent() {
         </h1>
 
         {confirmed && (
-          <div className="bg-green-50 border border-green-200 p-4 rounded-lg mb-6 fade-in">
-            <p className="text-green-800">✅ Your reservation has been confirmed!</p>
+          <div className="bg-white border border-black p-4 rounded-lg mb-6 fade-in">
+            <p className="text-black">✅ Your reservation has been confirmed!</p>
           </div>
         )}
 
         {reservations.length === 0 ? (
           <div className="text-center py-12 fade-in">
-            <h2 className="text-xl font-aileron-light text-gray-600 mb-4">No reservations found</h2>
-            <p className="text-gray-500 mb-6 font-foundation-sans">
+            <h2 className="text-xl font-aileron-light text-black mb-4">No reservations found</h2>
+            <p className="text-black mb-6 font-foundation-sans">
               Start by making a reservation at your hotel
             </p>
             <Button
               onClick={() => router.push('/hotel/aman-new-york')}
-              className="bg-black text-white hover:bg-gray-800 transition-all duration-200 hover-lift"
+              className="bg-black text-white hover:bg-black/90 transition-all duration-200 hover-lift"
             >
               Browse Amenities
             </Button>
@@ -248,7 +248,7 @@ function ReservationsContent() {
                           <CardTitle className="text-base sm:text-lg font-aileron-regular text-black capitalize truncate">
                             {reservation.amenity?.displayName || reservation.amenity_type}
                           </CardTitle>
-                          <p className="text-sm sm:text-base text-gray-600 capitalize font-foundation-sans truncate">
+                          <p className="text-sm sm:text-base text-black/70 capitalize font-foundation-sans truncate">
                             {reservation.hotel?.name || reservation.hotel_slug.replace('-', ' ')}
                           </p>
                           <div className="mt-2 space-y-2">
@@ -260,7 +260,7 @@ function ReservationsContent() {
                                 {reservation.time_block}
                               </Badge>
                             </div>
-                            <p className="text-xs sm:text-sm text-gray-500 font-foundation-sans">
+                            <p className="text-xs sm:text-sm text-black/60 font-foundation-sans">
                               <span className="font-medium">Booked:</span>{' '}
                               {new Date(reservation.created_at).toLocaleDateString()}
                             </p>
@@ -272,7 +272,7 @@ function ReservationsContent() {
                             onClick={() => handleCancelReservation(reservation.id)}
                             variant="outline"
                             size="sm"
-                            className="w-full sm:w-auto text-red-600 border-red-200 hover:bg-red-50 transition-all duration-200 hover-lift"
+                            className="w-full sm:w-auto text-black border-black hover:bg-black hover:text-white transition-all duration-200 hover-lift"
                           >
                             Cancel
                           </Button>

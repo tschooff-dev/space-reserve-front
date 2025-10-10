@@ -80,7 +80,7 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-light text-black mb-2">{amenity.displayName}</h1>
-        <p className="text-gray-600">{hotel.name}</p>
+        <p className="text-black/70">{hotel.name}</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
@@ -89,7 +89,7 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
           <h2 className="text-xl font-medium text-black">Select Your Seats</h2>
 
           {/* Pool/Amenity Layout */}
-          <div className="relative bg-blue-100 p-8 rounded-lg">
+          <div className="relative bg-white border border-black p-8 rounded-lg">
             {amenity.layoutImage && (
               <Image
                 src={amenity.layoutImage}
@@ -111,7 +111,7 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
                     className={`w-12 h-12 rounded border-2 flex items-center justify-center text-sm font-medium transition-colors ${
                       selectedSeats.includes(seat)
                         ? 'bg-black text-white border-black'
-                        : 'bg-white border-gray-300 hover:border-gray-400'
+                        : 'bg-white border-black/20 hover:border-black'
                     }`}
                   >
                     {seat}
@@ -120,8 +120,8 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
               </div>
 
               {/* Pool/Amenity Area */}
-              <div className="flex-1 mx-8 bg-blue-200 rounded-lg h-32 flex items-center justify-center">
-                <span className="text-blue-800 font-medium">{amenity.displayName}</span>
+              <div className="flex-1 mx-8 bg-black/10 rounded-lg h-32 flex items-center justify-center border border-black">
+                <span className="text-black font-medium">{amenity.displayName}</span>
               </div>
 
               {/* Right Side Seats */}
@@ -133,7 +133,7 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
                     className={`w-12 h-12 rounded border-2 flex items-center justify-center text-sm font-medium transition-colors ${
                       selectedSeats.includes(seat)
                         ? 'bg-black text-white border-black'
-                        : 'bg-white border-gray-300 hover:border-gray-400'
+                        : 'bg-white border-black/20 hover:border-black'
                     }`}
                   >
                     {seat}
@@ -145,9 +145,9 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
 
           {/* Selection Summary */}
           {selectedSeats.length > 0 && (
-            <div className="bg-gray-50 p-4 rounded-lg">
+            <div className="bg-white border border-black p-4 rounded-lg">
               <h3 className="font-medium text-black mb-2">Selected Seats:</h3>
-              <p className="text-gray-700">{selectedSeats.join(', ')}</p>
+              <p className="text-black/80">{selectedSeats.join(', ')}</p>
             </div>
           )}
         </div>
@@ -175,9 +175,9 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
 
           {/* Special Instructions */}
           {amenity.specialInstructions && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
-              <h3 className="font-medium text-yellow-800 mb-2">Important Notes:</h3>
-              <p className="text-yellow-700 text-sm">{amenity.specialInstructions}</p>
+            <div className="bg-white border-2 border-black p-4 rounded-lg">
+              <h3 className="font-medium text-black mb-2">Important Notes:</h3>
+              <p className="text-black text-sm">{amenity.specialInstructions}</p>
             </div>
           )}
 
@@ -185,7 +185,7 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
           <Button
             onClick={handleContinue}
             disabled={selectedSeats.length === 0 || !selectedTimeSlot}
-            className="w-full bg-black text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-black text-white hover:bg-black/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Continue to Confirmation
           </Button>

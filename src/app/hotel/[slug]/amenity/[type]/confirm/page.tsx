@@ -88,34 +88,34 @@ export default function ConfirmationPage() {
       <Navigation />
 
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <div className="bg-white border border-black rounded-lg p-6">
           <h1 className="text-2xl font-light text-black mb-6">Confirm Your Reservation</h1>
 
           <div className="space-y-4 mb-8">
             <div>
-              <h2 className="font-medium text-gray-900">Hotel</h2>
-              <p className="text-gray-600">{reservation.hotelName}</p>
+              <h2 className="font-medium text-black">Hotel</h2>
+              <p className="text-black/70">{reservation.hotelName}</p>
             </div>
 
             <div>
-              <h2 className="font-medium text-gray-900">Amenity</h2>
-              <p className="text-gray-600">{reservation.amenityName}</p>
+              <h2 className="font-medium text-black">Amenity</h2>
+              <p className="text-black/70">{reservation.amenityName}</p>
             </div>
 
             <div>
-              <h2 className="font-medium text-gray-900">Selected Seats</h2>
-              <p className="text-gray-600">{reservation.seats.join(', ')}</p>
+              <h2 className="font-medium text-black">Selected Seats</h2>
+              <p className="text-black/70">{reservation.seats.join(', ')}</p>
             </div>
 
             <div>
-              <h2 className="font-medium text-gray-900">Time Slot</h2>
-              <p className="text-gray-600">{reservation.timeSlot}</p>
+              <h2 className="font-medium text-black">Time Slot</h2>
+              <p className="text-black/70">{reservation.timeSlot}</p>
             </div>
           </div>
 
-          <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mb-6">
-            <h3 className="font-medium text-yellow-800 mb-2">Important:</h3>
-            <ul className="text-yellow-700 text-sm space-y-1">
+          <div className="bg-white border-2 border-black p-4 rounded-lg mb-6">
+            <h3 className="font-medium text-black mb-2">Important:</h3>
+            <ul className="text-black text-sm space-y-1">
               <li>• Please arrive 10 minutes before your reserved time</li>
               <li>• Cancellations must be made at least 2 hours in advance</li>
               <li>• You may reserve up to 2 seats per time slot</li>
@@ -129,7 +129,7 @@ export default function ConfirmationPage() {
             <Button
               onClick={handleConfirm}
               disabled={loading}
-              className="flex-1 bg-black text-white hover:bg-gray-800"
+              className="flex-1 bg-black text-white hover:bg-black/90"
             >
               {loading ? 'Confirming...' : 'Confirm Reservation'}
             </Button>
