@@ -89,6 +89,15 @@ export default function Navigation() {
             >
               Customer Service
             </button>
+            <button
+              onClick={() => {
+                router.push('/settings')
+                setIsMenuOpen(false)
+              }}
+              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+            >
+              Typography Settings
+            </button>
             <div className="border-t border-white/10 my-2" />
             <button
               onClick={() => {
