@@ -145,14 +145,25 @@ export default function SettingsPage() {
   const handleFontSelect = (fontId: string) => {
     setSelectedFont(fontId)
     localStorage.setItem('fontPreference', fontId)
-    // Don't apply font on settings page - let each card show its own font
-    // Font will be applied on other pages via FontLoader component
+
+    // Dispatch custom event to notify FontLoader on other pages/tabs
+    window.dispatchEvent(
+      new CustomEvent('fontChange', {
+        detail: {fontId},
+      })
+    )
   }
 
   const handleReset = () => {
     setSelectedFont('default')
     localStorage.removeItem('fontPreference')
-    // Font will be reset on other pages via FontLoader component
+
+    // Dispatch custom event to reset font
+    window.dispatchEvent(
+      new CustomEvent('fontChange', {
+        detail: {fontId: null},
+      })
+    )
   }
 
   if (!mounted) {
