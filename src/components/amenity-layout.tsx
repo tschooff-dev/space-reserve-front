@@ -84,7 +84,7 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
           {/* Horizontal Layout with Pool in Center */}
           <div className="flex flex-col items-stretch gap-4 sm:gap-6 py-8 max-w-5xl mx-auto w-full">
             {/* Top Row Seats */}
-            <div className="flex justify-center gap-2 sm:gap-3">
+            <div className="flex justify-between">
               {topSeats.map((seat) => (
                 <button
                   key={seat}
@@ -110,7 +110,7 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
             </div>
 
             {/* Bottom Row Seats */}
-            <div className="flex justify-center gap-2 sm:gap-3">
+            <div className="flex justify-between">
               {bottomSeats.map((seat) => (
                 <button
                   key={seat}

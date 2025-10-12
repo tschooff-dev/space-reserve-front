@@ -178,13 +178,33 @@ function ReservationsContent() {
       <Navigation />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <h1 className="text-2xl sm:text-3xl font-aileron-light text-black mb-6 sm:mb-8 slide-up">
-          My Reservations
-        </h1>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8 slide-up">
+          <h1 className="text-2xl sm:text-3xl font-aileron-light text-black">My Reservations</h1>
+          <Button
+            onClick={() => router.push('/hotels')}
+            className="bg-black text-white hover:bg-black/90 transition-all duration-200 hover-lift flex items-center gap-2"
+          >
+            <span className="text-lg">+</span>
+            <span>New Reservation</span>
+          </Button>
+        </div>
 
         {confirmed && (
-          <div className="bg-white border border-black p-4 rounded-lg mb-6 fade-in">
-            <p className="text-black">✅ Your reservation has been confirmed!</p>
+          <div className="bg-white border-2 border-black p-4 rounded-lg mb-6 fade-in flex items-center gap-3">
+            <div className="flex-shrink-0 w-6 h-6 bg-black rounded-full flex items-center justify-center">
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <p className="text-black font-aileron-regular">Your reservation has been confirmed!</p>
           </div>
         )}
 
@@ -192,13 +212,14 @@ function ReservationsContent() {
           <div className="text-center py-12 fade-in">
             <h2 className="text-xl font-aileron-light text-black mb-4">No reservations found</h2>
             <p className="text-black mb-6 font-foundation-sans">
-              Start by making a reservation at your hotel
+              Browse hotels and make your first reservation
             </p>
             <Button
-              onClick={() => router.push('/hotel/aman-new-york')}
-              className="bg-black text-white hover:bg-black/90 transition-all duration-200 hover-lift"
+              onClick={() => router.push('/hotels')}
+              className="bg-black text-white hover:bg-black/90 transition-all duration-200 hover-lift flex items-center gap-2 mx-auto"
             >
-              Browse Amenities
+              <span className="text-lg">+</span>
+              <span>New Reservation</span>
             </Button>
           </div>
         ) : (

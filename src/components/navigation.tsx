@@ -64,12 +64,12 @@ export default function Navigation() {
           <div className="px-4 py-3 space-y-1">
             <button
               onClick={() => {
-                router.push('/account')
+                router.push('/hotels')
                 setIsMenuOpen(false)
               }}
               className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
             >
-              Account
+              Hotels
             </button>
             <button
               onClick={() => {
@@ -79,6 +79,15 @@ export default function Navigation() {
               className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
             >
               Reservations
+            </button>
+            <button
+              onClick={() => {
+                router.push('/account')
+                setIsMenuOpen(false)
+              }}
+              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+            >
+              Account
             </button>
             <button
               onClick={() => {
