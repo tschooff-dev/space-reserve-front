@@ -144,8 +144,15 @@
   }
 
   /* Alternative Font Options */
+  .font-default,
+  .font-default * {
+    /* Default uses Aileron for display and Foundation Sans for body - no override needed */
+  }
+
   body.font-helvetica,
-  body.font-helvetica * {
+  body.font-helvetica *,
+  .font-helvetica,
+  .font-helvetica * {
     font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
   }
 
@@ -154,7 +161,14 @@
   body.font-futura h3,
   body.font-futura .font-aileron,
   body.font-futura .font-aileron-light,
-  body.font-futura .font-aileron-regular {
+  body.font-futura .font-aileron-regular,
+  .font-futura h1,
+  .font-futura h2,
+  .font-futura h3,
+  .font-futura .font-aileron,
+  .font-futura .font-aileron-light,
+  .font-futura .font-aileron-regular,
+  .font-futura * {
     font-family: 'Futura', 'Century Gothic', 'Apple Gothic', sans-serif !important;
   }
 
@@ -169,7 +183,14 @@
   body.font-didot h3,
   body.font-didot .font-aileron,
   body.font-didot .font-aileron-light,
-  body.font-didot .font-aileron-regular {
+  body.font-didot .font-aileron-regular,
+  .font-didot h1,
+  .font-didot h2,
+  .font-didot h3,
+  .font-didot .font-aileron,
+  .font-didot .font-aileron-light,
+  .font-didot .font-aileron-regular,
+  .font-didot * {
     font-family: 'Didot', 'Bodoni MT', 'Bodoni', serif !important;
   }
 
@@ -180,7 +201,9 @@
   }
 
   body.font-avenir,
-  body.font-avenir * {
+  body.font-avenir *,
+  .font-avenir,
+  .font-avenir * {
     font-family: 'Avenir Next', 'Avenir', 'Century Gothic', sans-serif !important;
   }
 
@@ -189,7 +212,14 @@
   body.font-garamond h3,
   body.font-garamond .font-aileron,
   body.font-garamond .font-aileron-light,
-  body.font-garamond .font-aileron-regular {
+  body.font-garamond .font-aileron-regular,
+  .font-garamond h1,
+  .font-garamond h2,
+  .font-garamond h3,
+  .font-garamond .font-aileron,
+  .font-garamond .font-aileron-light,
+  .font-garamond .font-aileron-regular,
+  .font-garamond * {
     font-family: 'Garamond', 'Baskerville', 'Times New Roman', serif !important;
   }
 
@@ -204,7 +234,14 @@
   body.font-optima h3,
   body.font-optima .font-aileron,
   body.font-optima .font-aileron-light,
-  body.font-optima .font-aileron-regular {
+  body.font-optima .font-aileron-regular,
+  .font-optima h1,
+  .font-optima h2,
+  .font-optima h3,
+  .font-optima .font-aileron,
+  .font-optima .font-aileron-light,
+  .font-optima .font-aileron-regular,
+  .font-optima * {
     font-family: 'Optima', 'Segoe UI', 'Candara', sans-serif !important;
   }
 
@@ -219,7 +256,14 @@
   body.font-bodoni h3,
   body.font-bodoni .font-aileron,
   body.font-bodoni .font-aileron-light,
-  body.font-bodoni .font-aileron-regular {
+  body.font-bodoni .font-aileron-regular,
+  .font-bodoni h1,
+  .font-bodoni h2,
+  .font-bodoni h3,
+  .font-bodoni .font-aileron,
+  .font-bodoni .font-aileron-light,
+  .font-bodoni .font-aileron-regular,
+  .font-bodoni * {
     font-family: 'Bodoni MT', 'Didot', 'Bodoni', serif !important;
   }
 
@@ -230,17 +274,23 @@
   }
 
   body.font-brandon,
-  body.font-brandon * {
+  body.font-brandon *,
+  .font-brandon,
+  .font-brandon * {
     font-family: var(--font-brandon-grotesque), 'Montserrat', 'Helvetica', sans-serif !important;
   }
 
   body.font-proxima,
-  body.font-proxima * {
+  body.font-proxima *,
+  .font-proxima,
+  .font-proxima * {
     font-family: var(--font-proxima-nova), 'Montserrat', 'Helvetica', sans-serif !important;
   }
 
   body.font-gotham,
-  body.font-gotham * {
+  body.font-gotham *,
+  .font-gotham,
+  .font-gotham * {
     font-family: var(--font-metropolis), 'Montserrat', 'Helvetica', sans-serif !important;
   }
 
@@ -249,7 +299,14 @@
   body.font-freight h3,
   body.font-freight .font-aileron,
   body.font-freight .font-aileron-light,
-  body.font-freight .font-aileron-regular {
+  body.font-freight .font-aileron-regular,
+  .font-freight h1,
+  .font-freight h2,
+  .font-freight h3,
+  .font-freight .font-aileron,
+  .font-freight .font-aileron-light,
+  .font-freight .font-aileron-regular,
+  .font-freight * {
     font-family: var(--font-freight-display), 'Georgia', serif !important;
     font-weight: 900;
   }

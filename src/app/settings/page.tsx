@@ -123,12 +123,9 @@ export default function SettingsPage() {
     const savedFont = localStorage.getItem('fontPreference')
     if (savedFont) {
       setSelectedFont(savedFont)
-      applyFont(savedFont)
     }
-  }, [])
 
-  const applyFont = (fontId: string) => {
-    // Remove all font classes from body
+    // Remove all font classes from body on settings page to prevent interference with previews
     document.body.classList.remove(
       'font-aileron',
       'font-helvetica',
@@ -143,24 +140,19 @@ export default function SettingsPage() {
       'font-gotham',
       'font-freight'
     )
-
-    // Apply selected font
-    const font = fontOptions.find((f) => f.id === fontId)
-    if (font) {
-      document.body.classList.add(font.cssClass)
-    }
-  }
+  }, [])
 
   const handleFontSelect = (fontId: string) => {
     setSelectedFont(fontId)
     localStorage.setItem('fontPreference', fontId)
-    applyFont(fontId)
+    // Don't apply font on settings page - let each card show its own font
+    // Font will be applied on other pages via FontLoader component
   }
 
   const handleReset = () => {
     setSelectedFont('default')
     localStorage.removeItem('fontPreference')
-    applyFont('default')
+    // Font will be reset on other pages via FontLoader component
   }
 
   if (!mounted) {
@@ -191,7 +183,7 @@ export default function SettingsPage() {
                 selectedFont === font.id
                   ? 'border-black bg-black text-white'
                   : 'border-black bg-white hover:bg-black/5'
-              }`}
+              } ${font.cssClass}`}
               onClick={() => handleFontSelect(font.id)}
             >
               <CardHeader>
@@ -230,37 +222,6 @@ export default function SettingsPage() {
                       className={`text-2xl sm:text-3xl ${
                         selectedFont === font.id ? 'text-white' : 'text-black'
                       }`}
-                      style={
-                        {
-                          fontFamily:
-                            font.id === 'default'
-                              ? 'var(--font-aileron) !important'
-                              : font.id === 'helvetica'
-                                ? "'Helvetica Neue', 'Helvetica', sans-serif !important"
-                                : font.id === 'futura'
-                                  ? "'Futura', 'Century Gothic', sans-serif !important"
-                                  : font.id === 'didot'
-                                    ? "'Didot', 'Bodoni MT', serif !important"
-                                    : font.id === 'avenir'
-                                      ? "'Avenir Next', 'Avenir', sans-serif !important"
-                                      : font.id === 'garamond'
-                                        ? "'Garamond', 'Baskerville', serif !important"
-                                        : font.id === 'optima'
-                                          ? "'Optima', 'Segoe UI', sans-serif !important"
-                                          : font.id === 'bodoni'
-                                            ? "'Bodoni MT', 'Didot', serif !important"
-                                            : font.id === 'brandon'
-                                              ? "var(--font-brandon-grotesque), 'Montserrat', sans-serif !important"
-                                              : font.id === 'proxima'
-                                                ? "var(--font-proxima-nova), 'Montserrat', sans-serif !important"
-                                                : font.id === 'gotham'
-                                                  ? "var(--font-metropolis), 'Montserrat', sans-serif !important"
-                                                  : font.id === 'freight'
-                                                    ? "var(--font-freight-display), 'Georgia', serif !important"
-                                                    : undefined,
-                          fontWeight: font.id === 'freight' ? '900 !important' : undefined,
-                        } as React.CSSProperties
-                      }
                     >
                       THE AMAN NEW YORK
                     </p>
@@ -278,24 +239,6 @@ export default function SettingsPage() {
                       className={`text-base ${
                         selectedFont === font.id ? 'text-white/90' : 'text-black/80'
                       }`}
-                      style={
-                        {
-                          fontFamily:
-                            font.id === 'default'
-                              ? 'var(--font-foundation-sans) !important'
-                              : font.id === 'helvetica'
-                                ? "'Helvetica Neue', 'Helvetica', sans-serif !important"
-                                : font.id === 'avenir'
-                                  ? "'Avenir Next', 'Avenir', sans-serif !important"
-                                  : font.id === 'brandon'
-                                    ? "var(--font-brandon-grotesque), 'Montserrat', sans-serif !important"
-                                    : font.id === 'proxima'
-                                      ? "var(--font-proxima-nova), 'Montserrat', sans-serif !important"
-                                      : font.id === 'gotham'
-                                        ? "var(--font-metropolis), 'Montserrat', sans-serif !important"
-                                        : "'Inter', sans-serif !important",
-                        } as React.CSSProperties
-                      }
                     >
                       A bandeau bra made of the softest buttery fabric that stretches with your body
                       while providing lift for your bust.
@@ -314,37 +257,6 @@ export default function SettingsPage() {
                       className={`text-sm uppercase tracking-widest ${
                         selectedFont === font.id ? 'text-white' : 'text-black'
                       }`}
-                      style={
-                        {
-                          fontFamily:
-                            font.id === 'default'
-                              ? 'var(--font-aileron) !important'
-                              : font.id === 'helvetica'
-                                ? "'Helvetica Neue', 'Helvetica', sans-serif !important"
-                                : font.id === 'futura'
-                                  ? "'Futura', 'Century Gothic', sans-serif !important"
-                                  : font.id === 'didot'
-                                    ? "'Didot', 'Bodoni MT', serif !important"
-                                    : font.id === 'avenir'
-                                      ? "'Avenir Next', 'Avenir', sans-serif !important"
-                                      : font.id === 'garamond'
-                                        ? "'Garamond', 'Baskerville', serif !important"
-                                        : font.id === 'optima'
-                                          ? "'Optima', 'Segoe UI', sans-serif !important"
-                                          : font.id === 'bodoni'
-                                            ? "'Bodoni MT', 'Didot', serif !important"
-                                            : font.id === 'brandon'
-                                              ? "var(--font-brandon-grotesque), 'Montserrat', sans-serif !important"
-                                              : font.id === 'proxima'
-                                                ? "var(--font-proxima-nova), 'Montserrat', sans-serif !important"
-                                                : font.id === 'gotham'
-                                                  ? "var(--font-metropolis), 'Montserrat', sans-serif !important"
-                                                  : font.id === 'freight'
-                                                    ? "var(--font-freight-display), 'Georgia', serif !important"
-                                                    : undefined,
-                          fontWeight: font.id === 'freight' ? '900 !important' : undefined,
-                        } as React.CSSProperties
-                      }
                     >
                       SPACERESERVE
                     </p>
