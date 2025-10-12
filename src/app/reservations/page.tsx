@@ -8,7 +8,6 @@ import {Card, CardHeader, CardTitle} from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import Navigation from '@/components/navigation'
 import Loading from '@/components/loading'
-import Image from 'next/image'
 import type {User} from '@supabase/supabase-js'
 
 interface Reservation {
@@ -231,38 +230,8 @@ function ReservationsContent() {
                 style={{animationDelay: `${index * 0.1}s`}}
               >
                 <CardHeader>
-                  {/* Mobile-first responsive layout */}
+                  {/* Reservation Details */}
                   <div className="flex flex-col sm:flex-row gap-4">
-                    {/* Images - Stack on mobile, side-by-side on desktop */}
-                    <div className="flex gap-3 sm:gap-4">
-                      {/* Hotel Image */}
-                      {reservation.hotel?.heroImage && (
-                        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 relative">
-                          <Image
-                            src={reservation.hotel.heroImage}
-                            alt={reservation.hotel.heroImageAlt || reservation.hotel.name}
-                            fill
-                            className="object-cover rounded-lg"
-                          />
-                        </div>
-                      )}
-
-                      {/* Amenity Image */}
-                      {reservation.amenity?.layoutImage && (
-                        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 relative">
-                          <Image
-                            src={reservation.amenity.layoutImage}
-                            alt={
-                              reservation.amenity.layoutImageAlt || reservation.amenity.displayName
-                            }
-                            fill
-                            className="object-cover rounded-lg"
-                          />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Reservation Details - Full width on mobile */}
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                         <div className="flex-1 min-w-0">

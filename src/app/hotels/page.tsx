@@ -137,7 +137,7 @@ export default function HotelsPage() {
                       />
                     </div>
                   )}
-                  <CardHeader>
+                  <CardHeader className="mt-3">
                     <CardTitle className="text-xl sm:text-2xl font-aileron-light uppercase tracking-wider text-black">
                       {hotel.name}
                     </CardTitle>
