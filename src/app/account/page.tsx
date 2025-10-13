@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState, Suspense} from 'react'
+import {useEffect, useState, Suspense, useMemo} from 'react'
 import {createClient} from '@/lib/supabase'
 import Navigation from '@/components/navigation'
 import {Button} from '@/components/ui/button'
@@ -11,7 +11,7 @@ import type {User} from '@supabase/supabase-js'
 function AccountContent() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
 
   useEffect(() => {
     const getUser = async () => {
@@ -29,7 +29,7 @@ function AccountContent() {
       }
     }
     getUser()
-  }, [])
+  }, [supabase.auth])
 
   if (loading) {
     return (

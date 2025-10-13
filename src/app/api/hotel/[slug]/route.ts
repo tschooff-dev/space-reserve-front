@@ -8,8 +8,12 @@ export async function GET(request: NextRequest, {params}: {params: Promise<{slug
     const hotel = await sanityClient.fetch(
       `*[_type == "hotel" && slug.current == $slug][0] {
         name,
+        description,
+        location,
         "heroImage": heroImage.asset->url,
-        "heroImageAlt": heroImage.alt
+        "heroImageAlt": heroImage.alt,
+        contactInfo,
+        isActive
       }`,
       {slug}
     )

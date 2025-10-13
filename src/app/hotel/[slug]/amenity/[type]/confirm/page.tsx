@@ -10,6 +10,7 @@ interface Reservation {
   hotelSlug: string
   amenityType: string
   seats: string[]
+  date: string
   timeSlot: string
   hotelName: string
   amenityName: string
@@ -49,6 +50,7 @@ export default function ConfirmationPage() {
             hotel_slug: reservation.hotelSlug,
             amenity_type: reservation.amenityType,
             seat_number: reservation.seats.join(', '),
+            reservation_date: reservation.date,
             time_block: reservation.timeSlot,
           },
         ])
@@ -105,6 +107,18 @@ export default function ConfirmationPage() {
             <div>
               <h2 className="font-medium text-black">Selected Seats</h2>
               <p className="text-black/70">{reservation.seats.join(', ')}</p>
+            </div>
+
+            <div>
+              <h2 className="font-medium text-black">Date</h2>
+              <p className="text-black/70">
+                {new Date(reservation.date).toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
             </div>
 
             <div>

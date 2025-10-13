@@ -8,8 +8,14 @@ export async function GET(request: NextRequest, context: {params: Promise<{type:
     const amenity = await sanityClient.fetch(
       `*[_type == "amenity" && type == $type][0] {
         displayName,
+        description,
         "layoutImage": layoutImage.asset->url,
-        "layoutImageAlt": layoutImage.alt
+        "layoutImageAlt": layoutImage.alt,
+        timeSlots,
+        maxReservations,
+        seatingLayout,
+        isActive,
+        specialInstructions
       }`,
       {type}
     )

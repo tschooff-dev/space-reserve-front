@@ -24,7 +24,7 @@ export default function HotelHeader({hotel}: HotelHeaderProps) {
       {/* Content */}
       <div className="absolute inset-0 flex items-center justify-center z-20">
         <div className="text-center text-white">
-          <h1 className="text-brand-hero mb-4">{hotel.name}</h1>
+          <h1 className="text-brand-hero mb-4 uppercase">{hotel.name}</h1>
           {hotel.description && (
             <p className="text-lg md:text-xl font-aileron-light max-w-2xl mx-auto">
               {hotel.description}
