@@ -11,6 +11,16 @@ interface AmenityLayoutProps {
   amenity: Amenity
 }
 
+const formatTimeSlot = (slot: string) => slot.replace(/\s*-\s*/g, ' - ')
+
+const formatDisplayDate = (value: string) =>
+  new Date(value + 'T00:00:00').toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
 export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
   const [selectedDate, setSelectedDate] = useState<string>('')
@@ -20,7 +30,6 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
   const router = useRouter()
   const supabase = useMemo(() => createClient(), [])
 
-  // Generate simple numbered seats (1, 2, 3...)
   const generateSeats = () => {
     const seats: string[] = []
     const {totalSeats} = amenity.seatingLayout
@@ -33,11 +42,11 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
   }
 
   const seats = generateSeats()
-  const topSeats = seats.slice(0, Math.floor(seats.length / 2))
-  const bottomSeats = seats.slice(Math.floor(seats.length / 2))
+  const midpoint = Math.floor(seats.length / 2)
+  const topSeats = seats.slice(0, midpoint)
+  const bottomSeats = seats.slice(midpoint)
 
   const handleSeatClick = (seatNumber: string) => {
-    // Don't allow selection of reserved seats
     if (reservedSeats.includes(seatNumber)) {
       return
     }
@@ -49,7 +58,6 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
     }
   }
 
-  // Fetch reserved seats when date or time slot changes
   useEffect(() => {
     const fetchReservedSeats = async () => {
       if (!selectedDate || !selectedTimeSlot) {
@@ -71,13 +79,10 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
           console.error('Error fetching reservations:', error)
           setReservedSeats([])
         } else if (data) {
-          // Parse seat numbers from all reservations
           const reserved = data.flatMap((reservation) =>
             reservation.seat_number.split(',').map((seat: string) => seat.trim())
           )
           setReservedSeats(reserved)
-
-          // Clear any selected seats that are now reserved
           setSelectedSeats((prev) => prev.filter((seat) => !reserved.includes(seat)))
         }
       } catch (error) {
@@ -101,7 +106,6 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
 
   const handleContinue = () => {
     if (selectedSeats.length > 0 && selectedDate && selectedTimeSlot) {
-      // Store selection in localStorage for demo purposes
       localStorage.setItem(
         'reservation',
         JSON.stringify({
@@ -119,10 +123,7 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
     }
   }
 
-  // Get today's date and 30 days from now in YYYY-MM-DD format
-  const getTodayDate = () => {
-    return new Date().toISOString().split('T')[0]
-  }
+  const getTodayDate = () => new Date().toISOString().split('T')[0]
 
   const getMaxDate = () => {
     const date = new Date()
@@ -130,132 +131,24 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
     return date.toISOString().split('T')[0]
   }
 
+  const canSelectSeats = Boolean(selectedDate && selectedTimeSlot)
+  const canContinue = selectedSeats.length > 0 && canSelectSeats
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      {/* Header */}
-      <div className="mb-8 sm:mb-12">
-        <h1 className="text-3xl sm:text-4xl font-aileron-light text-black mb-2 uppercase tracking-wider">
-          {amenity.displayName}
-        </h1>
-        <p className="text-black/70 font-foundation-sans uppercase tracking-wide text-sm">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-0 py-10 sm:py-14">
+      <div className="mb-12 space-y-2">
+        <p className="text-sm font-aileron-regular text-black/70 uppercase tracking-[0.4em]">
           {hotel.name}
         </p>
+        <h1 className="text-4xl sm:text-5xl font-aileron-light text-black uppercase tracking-[0.5em]">
+          {amenity.displayName}
+        </h1>
       </div>
 
-      <div className="space-y-8 sm:space-y-12">
-        {/* Seat Selection - Ticketmaster Style */}
-        <div className="space-y-6">
-          <h2 className="text-xl sm:text-2xl font-aileron-regular text-black uppercase tracking-wide">
-            Select Your Seats
-          </h2>
-
-          {/* Horizontal Layout with Pool in Center */}
-          <div className="flex flex-col items-stretch gap-4 sm:gap-6 py-8 max-w-5xl mx-auto w-full">
-            {/* Top Row Seats */}
-            <div className="flex justify-between">
-              {topSeats.map((seat) => {
-                const isReserved = reservedSeats.includes(seat)
-                const isSelected = selectedSeats.includes(seat)
-                return (
-                  <button
-                    key={seat}
-                    onClick={() => handleSeatClick(seat)}
-                    disabled={isReserved}
-                    className={`w-12 h-12 sm:w-14 sm:h-14 border-2 flex items-center justify-center text-sm sm:text-base font-medium font-aileron-regular transition-all ${
-                      isSelected
-                        ? 'bg-black text-white border-black'
-                        : isReserved
-                          ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed line-through'
-                          : 'bg-white text-black border-black hover:bg-black hover:text-white cursor-pointer'
-                    }`}
-                    title={isReserved ? 'Already reserved' : ''}
-                  >
-                    {seat}
-                  </button>
-                )
-              })}
-            </div>
-
-            {/* Pool Rectangle - Long Horizontal */}
-            <div className="w-full">
-              <div className="border-2 border-black bg-white h-24 sm:h-32 flex items-center justify-center">
-                <span className="text-2xl sm:text-3xl font-aileron-regular text-black uppercase tracking-widest">
-                  POOL
-                </span>
-              </div>
-            </div>
-
-            {/* Bottom Row Seats */}
-            <div className="flex justify-between">
-              {bottomSeats.map((seat) => {
-                const isReserved = reservedSeats.includes(seat)
-                const isSelected = selectedSeats.includes(seat)
-                return (
-                  <button
-                    key={seat}
-                    onClick={() => handleSeatClick(seat)}
-                    disabled={isReserved}
-                    className={`w-12 h-12 sm:w-14 sm:h-14 border-2 flex items-center justify-center text-sm sm:text-base font-medium font-aileron-regular transition-all ${
-                      isSelected
-                        ? 'bg-black text-white border-black'
-                        : isReserved
-                          ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed line-through'
-                          : 'bg-white text-black border-black hover:bg-black hover:text-white cursor-pointer'
-                    }`}
-                    title={isReserved ? 'Already reserved' : ''}
-                  >
-                    {seat}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Seat Legend */}
-          {(selectedDate || selectedTimeSlot) && (
-            <div className="flex flex-wrap gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 border-2 border-black bg-white"></div>
-                <span className="font-foundation-sans text-black/70">Available</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 border-2 border-black bg-black"></div>
-                <span className="font-foundation-sans text-black/70">Your Selection</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 border-2 border-gray-300 bg-gray-100"></div>
-                <span className="font-foundation-sans text-black/70">Reserved</span>
-              </div>
-            </div>
-          )}
-
-          {/* Selection Summary */}
-          {selectedSeats.length > 0 && (
-            <div className="bg-white border-2 border-black p-4 sm:p-6">
-              <p className="font-aileron-regular text-black">
-                <span className="uppercase tracking-wide text-sm">Selected Seats:</span>{' '}
-                <span className="font-aileron-light text-lg">{selectedSeats.join(', ')}</span>
-              </p>
-            </div>
-          )}
-
-          {/* Loading indicator */}
-          {loadingReservations && (
-            <div className="text-center py-2">
-              <p className="text-sm text-black/70 font-foundation-sans">
-                Checking seat availability...
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Date Selection */}
-        <div className="space-y-6">
-          <h2 className="text-xl sm:text-2xl font-aileron-regular text-black uppercase tracking-wide">
-            Select Date
-          </h2>
-
-          <div className="max-w-md">
+      <div className="space-y-10">
+        <div className="grid gap-8 md:grid-cols-2">
+          <div className="border border-black p-6 space-y-4">
+            <p className="text-xs uppercase tracking-[0.4em] text-black/60">Date</p>
             <input
               type="date"
               id="reservation-date"
@@ -265,66 +158,159 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
               min={getTodayDate()}
               max={getMaxDate()}
               required
-              className="w-full p-4 border-2 border-black text-black font-aileron-regular text-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 cursor-pointer [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100"
+              className="w-full border border-black px-4 py-3 bg-white text-black font-aileron-regular text-base uppercase tracking-[0.3em] focus:outline-none focus:ring-2 focus:ring-black appearance-none cursor-pointer"
             />
             {selectedDate && (
-              <p className="mt-3 text-sm text-black/70 font-foundation-sans">
-                Selected:{' '}
-                {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
+              <p className="text-xs text-black/60 uppercase tracking-[0.3em]">
+                {formatDisplayDate(selectedDate)}
               </p>
             )}
           </div>
+
+          <div className="border border-black p-6 space-y-4">
+            <p className="text-xs uppercase tracking-[0.4em] text-black/60">Time</p>
+            <div className="flex flex-col gap-3">
+              {amenity.timeSlots.map((timeSlot) => {
+                const selected = selectedTimeSlot === timeSlot
+                return (
+                  <button
+                    key={timeSlot}
+                    onClick={() => handleTimeSlotSelect(timeSlot)}
+                    disabled={!selectedDate}
+                    className={`border border-black px-4 py-4 text-left uppercase tracking-[0.3em] text-sm transition-colors ${
+                      selected
+                        ? 'bg-black text-white'
+                        : 'bg-white text-black hover:bg-black hover:text-white'
+                    } ${!selectedDate ? 'opacity-30 cursor-not-allowed' : ''}`}
+                  >
+                    <span className="text-lg font-aileron-regular">{formatTimeSlot(timeSlot)}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
 
-        {/* Time Selection */}
-        <div className="space-y-6">
-          <h2 className="text-xl sm:text-2xl font-aileron-regular text-black uppercase tracking-wide">
-            Select Time
-          </h2>
-
-          <div className="grid gap-3 sm:gap-4">
-            {amenity.timeSlots.map((timeSlot) => (
-              <button
-                key={timeSlot}
-                onClick={() => handleTimeSlotSelect(timeSlot)}
-                disabled={!selectedDate}
-                className={`p-4 sm:p-6 border-2 text-left transition-all ${
-                  selectedTimeSlot === timeSlot
-                    ? 'border-black bg-black text-white'
-                    : 'border-black bg-white text-black hover:bg-black hover:text-white'
-                } ${!selectedDate ? 'opacity-30 cursor-not-allowed' : ''}`}
-              >
-                <div className="font-aileron-regular text-lg sm:text-xl">{timeSlot}</div>
-              </button>
-            ))}
+        <div className="border border-black p-6 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs uppercase tracking-[0.3em] text-black/60 gap-2">
+            <span>Seats</span>
+            {canSelectSeats && selectedDate && (
+              <span>
+                {formatDisplayDate(selectedDate)} · {formatTimeSlot(selectedTimeSlot)}
+              </span>
+            )}
           </div>
 
-          {/* Special Instructions */}
-          {amenity.specialInstructions && (
-            <div className="bg-white border-2 border-black p-4 sm:p-6">
-              <h3 className="font-aileron-regular text-black mb-2 uppercase tracking-wide text-sm">
-                Important Notes
-              </h3>
-              <p className="text-black font-foundation-sans text-sm">
-                {amenity.specialInstructions}
-              </p>
+          {!canSelectSeats ? (
+            <p className="text-sm font-aileron-regular text-black/60">
+              Choose a date and time to preview available seating.
+            </p>
+          ) : (
+            <div className="space-y-6">
+              {loadingReservations && (
+                <p className="text-xs uppercase tracking-[0.3em] text-black/50">
+                  Checking availability
+                </p>
+              )}
+
+              <div className="flex flex-col items-center gap-5">
+                <div className="flex flex-wrap justify-center gap-2">
+                  {topSeats.map((seat) => {
+                    const isReserved = reservedSeats.includes(seat)
+                    const isSelected = selectedSeats.includes(seat)
+                    return (
+                      <button
+                        key={seat}
+                        onClick={() => handleSeatClick(seat)}
+                        disabled={isReserved}
+                        className={`w-10 h-10 sm:w-12 sm:h-12 border text-xs font-aileron-regular tracking-[0.2em] transition-colors ${
+                          isSelected
+                            ? 'bg-black text-white border-black'
+                            : isReserved
+                              ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed line-through'
+                              : 'bg-white text-black border-black hover:bg-black hover:text-white'
+                        }`}
+                        title={isReserved ? 'Already reserved' : 'Available'}
+                      >
+                        {seat}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                <div className="w-full border border-black h-14 sm:h-16 flex items-center justify-center">
+                  <span className="text-lg sm:text-xl font-aileron-regular text-black uppercase tracking-[0.6em]">
+                    POOL
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-2">
+                  {bottomSeats.map((seat) => {
+                    const isReserved = reservedSeats.includes(seat)
+                    const isSelected = selectedSeats.includes(seat)
+                    return (
+                      <button
+                        key={seat}
+                        onClick={() => handleSeatClick(seat)}
+                        disabled={isReserved}
+                        className={`w-10 h-10 sm:w-12 sm:h-12 border text-xs font-aileron-regular tracking-[0.2em] transition-colors ${
+                          isSelected
+                            ? 'bg-black text-white border-black'
+                            : isReserved
+                              ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed line-through'
+                              : 'bg-white text-black border-black hover:bg-black hover:text-white'
+                        }`}
+                        title={isReserved ? 'Already reserved' : 'Available'}
+                      >
+                        {seat}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-4 text-xs uppercase tracking-[0.3em] text-black/60">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 border border-black bg-white"></div>
+                  <span>Available</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 border border-black bg-black"></div>
+                  <span>Selected</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 border border-gray-300 bg-gray-100"></div>
+                  <span>Reserved</span>
+                </div>
+              </div>
             </div>
           )}
-
-          {/* Continue Button */}
-          <Button
-            onClick={handleContinue}
-            disabled={selectedSeats.length === 0 || !selectedDate || !selectedTimeSlot}
-            className="w-full bg-black text-white hover:bg-black/90 disabled:opacity-50 disabled:cursor-not-allowed h-12 sm:h-14 text-base sm:text-lg font-aileron-regular uppercase tracking-wide"
-          >
-            Continue to Confirmation
-          </Button>
         </div>
+
+        {selectedSeats.length > 0 && (
+          <div className="border border-black p-6 flex flex-wrap gap-6 text-xs uppercase tracking-[0.3em] text-black/70">
+            <p>
+              Seats <span className="text-black ml-1">{selectedSeats.join(', ')}</span>
+            </p>
+            <p>
+              Date{' '}
+              <span className="text-black ml-1">
+                {selectedDate ? formatDisplayDate(selectedDate) : 'Select a date'}
+              </span>
+            </p>
+            <p>
+              Time <span className="text-black ml-1">{formatTimeSlot(selectedTimeSlot)}</span>
+            </p>
+          </div>
+        )}
+
+        <Button
+          onClick={handleContinue}
+          disabled={!canContinue}
+          className="w-full border border-black bg-black text-white rounded-none uppercase tracking-[0.3em] py-4 text-sm sm:text-base disabled:opacity-30 disabled:cursor-not-allowed"
+        >
+          Continue to Confirmation
+        </Button>
       </div>
     </div>
   )
