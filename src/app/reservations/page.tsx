@@ -50,6 +50,8 @@ interface Reservation {
   }
 }
 
+const formatTimeBlock = (block: string) => block.replace(/\s*-\s*/g, ' - ')
+
 function ReservationsContent() {
   const [reservations, setReservations] = useState<Reservation[]>([])
   const [loading, setLoading] = useState(true)
@@ -185,8 +187,8 @@ function ReservationsContent() {
       <div className="min-h-screen bg-white">
         <Navigation />
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up">My Reservations</h1>
-          <div className="bg-white border border-black rounded-lg p-6 flex items-center justify-center min-h-[400px]">
+          <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up uppercase tracking-[0.3em]">Reservations</h1>
+          <div className="bg-white border border-black rounded-none p-6 flex items-center justify-center min-h-[400px]">
             <Loading text="Loading your reservations..." size="lg" />
           </div>
         </div>
@@ -200,7 +202,7 @@ function ReservationsContent() {
         <Navigation />
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="text-center fade-in">
-            <h1 className="text-2xl font-aileron-light text-black mb-4">
+            <h1 className="text-2xl font-aileron-light text-black mb-4 uppercase tracking-[0.3em]">
               Please sign in to view your reservations
             </h1>
             <Button
@@ -220,15 +222,11 @@ function ReservationsContent() {
       <Navigation />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8 slide-up">
-          <h1 className="text-2xl sm:text-3xl font-aileron-light text-black">My Reservations</h1>
-          <Button
-            onClick={() => router.push('/hotels')}
-            className="bg-black text-white hover:bg-black/90 transition-all duration-200 hover-lift flex items-center gap-2"
-          >
-            <span className="text-lg">+</span>
-            <span>New Reservation</span>
-          </Button>
+        <div className="flex flex-col gap-4 mb-10 slide-up">
+          <h1 className="text-2xl sm:text-3xl font-aileron-light text-black uppercase tracking-[0.3em]">
+            Reservations
+          </h1>
+          <p className="text-sm font-aileron-regular text-black uppercase tracking-[0.3em]">Pool</p>
         </div>
 
         {confirmed && (
@@ -251,82 +249,71 @@ function ReservationsContent() {
         )}
 
         {reservations.length === 0 ? (
-          <div className="text-center py-12 fade-in">
-            <h2 className="text-xl font-aileron-light text-black mb-4">No reservations found</h2>
-            <p className="text-black font-foundation-sans">
-              Browse hotels and make your first reservation
-            </p>
+          <div className="border border-black p-8 flex flex-col gap-6 fade-in">
+            <div>
+              <p className="text-xs font-aileron-regular uppercase tracking-[0.3em] text-black/70">
+                Pool
+              </p>
+              <p className="mt-4 text-3xl font-aileron-light text-black">Reserve a private space</p>
+            </div>
+            <Button
+              onClick={() => router.push('/hotels')}
+              className="border border-black bg-white text-black rounded-none uppercase tracking-[0.3em] py-4 hover:bg-black hover:text-white transition-colors"
+            >
+              Continue
+            </Button>
           </div>
         ) : (
           <div className="space-y-3 sm:space-y-4">
             {reservations.map((reservation, index) => (
               <Card
                 key={reservation.id}
-                className="hover-glow transition-all duration-200 slide-up"
+                className="border border-black rounded-none transition-all duration-200 slide-up"
                 style={{animationDelay: `${index * 0.1}s`}}
               >
-                <CardHeader>
-                  {/* Reservation Details */}
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-base sm:text-lg font-aileron-regular text-black capitalize truncate">
-                            {reservation.amenity?.displayName || reservation.amenity_type}
-                          </CardTitle>
-                          <p className="text-sm sm:text-base text-black/70 capitalize font-foundation-sans truncate">
-                            {reservation.hotel?.name || reservation.hotel_slug.replace('-', ' ')}
-                          </p>
-                          <div className="mt-2 space-y-2">
-                            {reservation.reservation_date && (
-                              <p className="text-sm font-aileron-regular text-black">
-                                Reservation Date:{' '}
-                                {new Date(
-                                  reservation.reservation_date + 'T00:00:00'
-                                ).toLocaleDateString('en-US', {
-                                  weekday: 'short',
-                                  month: 'short',
-                                  day: 'numeric',
-                                  year: 'numeric',
-                                })}
-                              </p>
-                            )}
-                            <div className="flex gap-2 flex-wrap">
-                              <Badge variant="secondary" className="text-xs">
-                                Seat {reservation.seat_number}
-                              </Badge>
-                              <Badge variant="outline" className="text-xs">
-                                {reservation.time_block}
-                              </Badge>
-                            </div>
-                            <p className="text-xs sm:text-sm text-black/60 font-foundation-sans">
-                              <span className="font-medium">Booked Date:</span>{' '}
-                              {new Date(reservation.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                        {/* Action buttons - Always in one row */}
-                        <div className="flex flex-row gap-2 w-full sm:w-auto sm:ml-4">
-                          <Button
-                            onClick={() => {
-                              setSelectedReservation(reservation)
-                              setOpenSections({reservation: true, hotel: false, amenity: false})
-                            }}
-                            size="sm"
-                            className="flex-1 sm:flex-none sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 hover-lift"
-                          >
-                            See Details
-                          </Button>
-                          <Button
-                            onClick={() => handleCancelReservation(reservation.id)}
-                            variant="outline"
-                            size="sm"
-                            className="flex-1 sm:flex-none sm:w-auto text-black border-black hover:bg-black hover:text-white transition-all duration-200 hover-lift"
-                          >
-                            Cancel
-                          </Button>
-                        </div>
-                      </div>
+                <CardHeader className="p-6 sm:p-8">
+                  <div className="flex flex-col gap-5">
+                    <div>
+                      <CardTitle className="text-base sm:text-lg font-aileron-regular text-black uppercase tracking-[0.3em]">
+                        {reservation.amenity?.displayName || reservation.amenity_type}
+                      </CardTitle>
+                      <p className="text-xs sm:text-sm text-black/70 uppercase tracking-[0.3em]">
+                        {reservation.hotel?.name || reservation.hotel_slug.replace('-', ' ')}
+                      </p>
+                    </div>
+                    <div className="space-y-1 text-sm font-aileron-regular">
+                      {reservation.reservation_date && (
+                        <p>
+                          {new Date(reservation.reservation_date + 'T00:00:00').toLocaleDateString(
+                            'en-US',
+                            {
+                              weekday: 'short',
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                            }
+                          )}
+                        </p>
+                      )}
+                      <p>{formatTimeBlock(reservation.time_block)}</p>
+                      <p>Seat {reservation.seat_number}</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button
+                        onClick={() => {
+                          setSelectedReservation(reservation)
+                          setOpenSections({reservation: true, hotel: false, amenity: false})
+                        }}
+                        className="flex-1 border border-black bg-white text-black rounded-none uppercase tracking-[0.3em] py-3 hover:bg-black hover:text-white transition-colors"
+                      >
+                        Details
+                      </Button>
+                      <Button
+                        onClick={() => handleCancelReservation(reservation.id)}
+                        className="flex-1 border border-black bg-black text-white rounded-none uppercase tracking-[0.3em] py-3 hover:bg-white hover:text-black transition-colors"
+                      >
+                        Cancel
+                      </Button>
                     </div>
                   </div>
                 </CardHeader>
@@ -334,6 +321,27 @@ function ReservationsContent() {
             ))}
           </div>
         )}
+
+        <div className="mt-16 flex flex-col gap-4">
+          <div className="w-full border border-black px-6 py-4 text-center uppercase tracking-[0.3em] text-xs sm:text-sm">
+            Demo Mode
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              onClick={() => router.push('/sign-up')}
+              className="flex-1 border border-black bg-white text-black rounded-none uppercase tracking-[0.3em] py-4 hover:bg-black hover:text-white transition-colors"
+            >
+              Sign Up
+            </Button>
+            <Button
+              onClick={() => router.push('/sign-in')}
+              className="flex-1 border border-black bg-black text-white rounded-none uppercase tracking-[0.3em] py-4 hover:bg-white hover:text-black transition-colors"
+            >
+              Sign In
+            </Button>
+          </div>
+        </div>
+
 
         {/* Details Modal with Tabs */}
         {selectedReservation && (
