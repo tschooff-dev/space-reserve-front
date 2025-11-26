@@ -301,27 +301,6 @@ function ReservationsContent() {
           </div>
         )}
 
-        <div className="mt-16 flex flex-col gap-4">
-          <div className="w-full border border-black px-6 py-4 text-center uppercase tracking-[0.3em] text-xs sm:text-sm">
-            Demo Mode
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button
-              onClick={() => router.push('/sign-up')}
-              className="flex-1 border border-black bg-white text-black rounded-none uppercase tracking-[0.3em] py-4 hover:bg-black hover:text-white transition-colors"
-            >
-              Sign Up
-            </Button>
-            <Button
-              onClick={() => router.push('/sign-in')}
-              className="flex-1 border border-black bg-black text-white rounded-none uppercase tracking-[0.3em] py-4 hover:bg-white hover:text-black transition-colors"
-            >
-              Sign In
-            </Button>
-          </div>
-        </div>
-
-
         {/* Details Modal with Tabs */}
         {selectedReservation && (
           <div
