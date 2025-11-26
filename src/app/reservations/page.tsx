@@ -1,7 +1,7 @@
 'use client'
 
 import {useEffect, useState, useCallback, Suspense, useMemo} from 'react'
-import {useRouter, useSearchParams} from 'next/navigation'
+import {useRouter} from 'next/navigation'
 import {createClient} from '@/lib/supabase'
 import {Button} from '@/components/ui/button'
 import {Card, CardHeader, CardTitle} from '@/components/ui/card'
@@ -64,7 +64,6 @@ function ReservationsContent() {
   }>({reservation: true, hotel: false, amenity: false})
   const [copiedId, setCopiedId] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
   const supabase = useMemo(() => createClient(), [])
 
   const toggleSection = (section: 'reservation' | 'hotel' | 'amenity') => {
@@ -180,8 +179,6 @@ function ReservationsContent() {
     }
   }
 
-  const confirmed = searchParams.get('confirmed') === 'true'
-
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
@@ -229,24 +226,6 @@ function ReservationsContent() {
           <p className="text-sm font-aileron-regular text-black uppercase tracking-[0.3em]">Pool</p>
         </div>
 
-        {confirmed && (
-          <div className="bg-white border-2 border-black p-4 rounded-lg mb-6 fade-in flex items-center gap-3">
-            <div className="flex-shrink-0 w-6 h-6 bg-black rounded-full flex items-center justify-center">
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M5 13l4 4L19 7"></path>
-              </svg>
-            </div>
-            <p className="text-black font-aileron-regular">Your reservation has been confirmed!</p>
-          </div>
-        )}
 
         {reservations.length === 0 ? (
           <div className="border border-black p-8 flex flex-col gap-6 fade-in">
