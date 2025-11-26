@@ -135,7 +135,7 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
   const canContinue = selectedSeats.length > 0 && canSelectSeats
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-0 py-10 sm:py-14">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-0 py-10 sm:py-14 min-h-[calc(100vh-200px)]">
       <div className="mb-12 space-y-2">
         <p className="text-sm font-aileron-regular text-black/70 uppercase tracking-[0.4em]">
           {hotel.name}
