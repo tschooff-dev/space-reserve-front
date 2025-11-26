@@ -16,96 +16,67 @@ export default function Navigation() {
     router.push('/sign-in')
   }
 
+  const goTo = (path: string) => {
+    router.push(path)
+    setIsMenuOpen(false)
+  }
+
   return (
     <nav className="bg-black text-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <h1 className="text-xl font-aileron-light tracking-wider">SPACERESERVE</h1>
-          </div>
+          <button
+            onClick={() => goTo('/')}
+            className="font-header text-sm tracking-[0.6em]"
+          >
+            LOGO
+          </button>
 
-          {/* Hamburger Menu Button - Always visible */}
           <button
             onClick={toggleMenu}
-            className="flex flex-col justify-center items-center w-8 h-8 gap-[5px] focus:outline-none group"
-            aria-label="Toggle menu"
+            className="flex flex-col justify-center items-center w-8 h-8 gap-[5px] focus:outline-none"
+            aria-label="Toggle navigation"
           >
             <span className="sr-only">Open main menu</span>
-            {/* Three thin horizontal lines */}
             <span
-              className={
-                isMenuOpen
-                  ? 'block h-[1px] w-6 bg-white transition-all duration-300 rotate-45 translate-y-[6px]'
-                  : 'block h-[1px] w-6 bg-white transition-all duration-300'
-              }
+              className={`block h-[1px] w-6 bg-white transition-all duration-300 ${
+                isMenuOpen ? 'rotate-45 translate-y-[6px]' : ''
+              }`}
             />
             <span
-              className={
-                isMenuOpen
-                  ? 'block h-[1px] w-6 bg-white transition-all duration-300 opacity-0'
-                  : 'block h-[1px] w-6 bg-white transition-all duration-300'
-              }
+              className={`block h-[1px] w-6 bg-white transition-all duration-300 ${
+                isMenuOpen ? 'opacity-0' : ''
+              }`}
             />
             <span
-              className={
-                isMenuOpen
-                  ? 'block h-[1px] w-6 bg-white transition-all duration-300 -rotate-45 -translate-y-[6px]'
-                  : 'block h-[1px] w-6 bg-white transition-all duration-300'
-              }
+              className={`block h-[1px] w-6 bg-white transition-all duration-300 ${
+                isMenuOpen ? '-rotate-45 -translate-y-[6px]' : ''
+              }`}
             />
           </button>
         </div>
       </div>
 
-      {/* Dropdown Menu */}
       {isMenuOpen && (
-        <div className="absolute right-0 w-full sm:w-64 bg-black border-t border-white/10 z-50">
-          <div className="px-4 py-3 space-y-1">
+        <div className="absolute right-0 w-full sm:w-64 bg-black border-t border-white/10">
+          <div className="px-4 py-2 flex flex-col text-left">
             <button
-              onClick={() => {
-                router.push('/hotels')
-                setIsMenuOpen(false)
-              }}
-              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+              onClick={() => goTo('/sign-in')}
+              className="px-4 py-4 text-xs uppercase tracking-[0.4em] hover:text-white/70"
             >
-              Hotels
+              Sign In
             </button>
             <button
-              onClick={() => {
-                router.push('/reservations')
-                setIsMenuOpen(false)
-              }}
-              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+              onClick={() => goTo('/reservations')}
+              className="px-4 py-4 text-xs uppercase tracking-[0.4em] hover:text-white/70"
             >
               Reservations
             </button>
             <button
-              onClick={() => {
-                router.push('/account')
-                setIsMenuOpen(false)
-              }}
-              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+              onClick={() => goTo('/account')}
+              className="px-4 py-4 text-xs uppercase tracking-[0.4em] hover:text-white/70"
             >
               Account
-            </button>
-            <button
-              onClick={() => {
-                router.push('/customer-service')
-                setIsMenuOpen(false)
-              }}
-              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
-            >
-              Customer Service
-            </button>
-            <button
-              onClick={() => {
-                router.push('/settings')
-                setIsMenuOpen(false)
-              }}
-              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
-            >
-              Typography Settings
             </button>
             <div className="border-t border-white/10 my-2" />
             <button
@@ -113,9 +84,9 @@ export default function Navigation() {
                 handleSignOut()
                 setIsMenuOpen(false)
               }}
-              className="text-white hover:text-white/80 block px-4 py-3 text-sm font-aileron-light w-full text-left transition-colors"
+              className="px-4 py-4 text-xs uppercase tracking-[0.4em] hover:text-white/70"
             >
-              Log out
+              Sign Out
             </button>
           </div>
         </div>
