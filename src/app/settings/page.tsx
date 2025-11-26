@@ -111,6 +111,46 @@ const fontOptions: FontOption[] = [
     cssClass: 'font-freight',
     description: 'Editorial luxury serif - Bold statement headlines',
   },
+  {
+    id: 'neuehaas',
+    name: 'Neue Haas + Graphik',
+    displayFont: 'Neue Haas Grotesk',
+    bodyFont: 'Graphik',
+    cssClass: 'font-neuehaas',
+    description: 'Refined Swiss grotesk pairing — elevated Helvetica alternative',
+  },
+  {
+    id: 'circular',
+    name: 'Circular Std',
+    displayFont: 'Circular Std',
+    bodyFont: 'Circular Std',
+    cssClass: 'font-circular',
+    description: 'Warm geometric sans used by brands like Airbnb',
+  },
+  {
+    id: 'sohne',
+    name: 'Söhne',
+    displayFont: 'Söhne',
+    bodyFont: 'Söhne',
+    cssClass: 'font-sohne',
+    description: 'DIN-inspired sans with luxury retail energy',
+  },
+  {
+    id: 'gtamerica',
+    name: 'GT America',
+    displayFont: 'GT America',
+    bodyFont: 'GT America',
+    cssClass: 'font-gtamerica',
+    description: 'Hybrid American/Swiss grotesk used by Everlane, Squarespace',
+  },
+  {
+    id: 'apercu',
+    name: 'Aperçu + IBM Plex Sans',
+    displayFont: 'Aperçu',
+    bodyFont: 'IBM Plex Sans',
+    cssClass: 'font-apercu',
+    description: 'Friendly editorial headlines with a crisp Plex body',
+  },
 ]
 
 export default function SettingsPage() {
@@ -138,7 +178,12 @@ export default function SettingsPage() {
       'font-brandon',
       'font-proxima',
       'font-gotham',
-      'font-freight'
+      'font-freight',
+      'font-neuehaas',
+      'font-circular',
+      'font-sohne',
+      'font-gtamerica',
+      'font-apercu'
     )
   }, [])
 

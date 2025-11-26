@@ -80,6 +80,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --font-header: var(--font-metropolis);
+  --font-body: var(--font-aileron);
 }
 
 .dark {
@@ -292,7 +294,42 @@
     font-family: 'Inter', system-ui, sans-serif !important;
   }
 
-  body.font-brandon,
+    body.font-neuehaas,
+  body.font-neuehaas *,
+  .font-neuehaas,
+  .font-neuehaas * {
+    font-family: var(--font-neue-haas), 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
+  }
+
+  body.font-circular,
+  body.font-circular *,
+  .font-circular,
+  .font-circular * {
+    font-family: var(--font-circular), 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
+  }
+
+  body.font-sohne,
+  body.font-sohne *,
+  .font-sohne,
+  .font-sohne * {
+    font-family: var(--font-sohne), 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
+  }
+
+  body.font-gtamerica,
+  body.font-gtamerica *,
+  .font-gtamerica,
+  .font-gtamerica * {
+    font-family: var(--font-gt-america), 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !important;
+  }
+
+  body.font-apercu,
+  body.font-apercu *,
+  .font-apercu,
+  .font-apercu * {
+    font-family: var(--font-apercu), 'Gill Sans', 'Helvetica', 'Arial', sans-serif !important;
+  }
+
+body.font-brandon,
   body.font-brandon *,
   .font-brandon,
   .font-brandon * {
@@ -334,6 +371,41 @@
   body.font-freight .font-foundation-sans,
   body.font-freight button {
     font-family: 'Inter', system-ui, sans-serif !important;
+  }
+
+  body.font-neuehaas {
+    --font-header: var(--font-neue-haas);
+    --font-body: var(--font-graphik);
+  }
+
+  body.font-graphik {
+    --font-header: var(--font-graphik);
+    --font-body: var(--font-graphik);
+  }
+
+  body.font-circular {
+    --font-header: var(--font-circular);
+    --font-body: var(--font-circular);
+  }
+
+  body.font-sohne {
+    --font-header: var(--font-sohne);
+    --font-body: var(--font-sohne);
+  }
+
+  body.font-gtamerica {
+    --font-header: var(--font-gt-america);
+    --font-body: var(--font-gt-america);
+  }
+
+  body.font-apercu {
+    --font-header: var(--font-apercu);
+    --font-body: var(--font-ibm-plex);
+  }
+
+  body.font-ibmplex {
+    --font-header: var(--font-ibm-plex);
+    --font-body: var(--font-ibm-plex);
   }
 
   /* Typography Scale for Brand Guidelines */

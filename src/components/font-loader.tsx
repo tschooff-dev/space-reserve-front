@@ -28,6 +28,13 @@ export function FontLoader() {
         'font-proxima',
         'font-gotham',
         'font-freight',
+        'font-neuehaas',
+        'font-graphik',
+        'font-circular',
+        'font-sohne',
+        'font-gtamerica',
+        'font-apercu',
+        'font-ibmplex',
       ]
       fontClasses.forEach((cls) => document.body.classList.remove(cls))
 
