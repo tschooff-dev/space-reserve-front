@@ -1,10 +1,9 @@
 'use client'
 
-import {useEffect, useState, Suspense, useMemo} from 'react'
+import {Suspense, useEffect, useMemo, useState} from 'react'
 import {createClient} from '@/lib/supabase'
 import Navigation from '@/components/navigation'
 import {Button} from '@/components/ui/button'
-import {Card, CardContent, CardTitle} from '@/components/ui/card'
 import Loading from '@/components/loading'
 import type {User} from '@supabase/supabase-js'
 
@@ -31,13 +30,21 @@ function AccountContent() {
     getUser()
   }, [supabase.auth])
 
+  const sendPasswordReset = async () => {
+    if (!user?.email) return
+    await supabase.auth.resetPasswordForEmail(user.email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+    alert('Password reset email sent.')
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
         <Navigation />
         <div className="max-w-4xl mx-auto px-4 py-8">
           <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up">Account</h1>
-          <div className="bg-white border border-black rounded-lg p-6 flex items-center justify-center min-h-[400px]">
+          <div className="bg-white border border-black rounded-none p-6 flex items-center justify-center min-h-[400px]">
             <Loading text="Loading your account..." size="lg" />
           </div>
         </div>
@@ -49,55 +56,78 @@ function AccountContent() {
     <div className="min-h-screen bg-white page-enter">
       <Navigation />
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up">Account</h1>
+      <div className="max-w-3xl mx-auto px-6 py-16 space-y-8">
+        <div>
+          <p className="text-sm uppercase tracking-[0.4em] text-black/60">Profile</p>
+          <h1 className="text-4xl font-aileron-light text-black uppercase tracking-[0.5em]">
+            Account
+          </h1>
+        </div>
 
-        <Card className="hover-glow transition-all duration-200">
-          {user ? (
-            <CardContent className="space-y-4 fade-in">
-              <div className="slide-up" style={{animationDelay: '0.1s'}}>
-                <CardTitle className="text-lg font-aileron-regular text-black mb-2">
-                  Email
-                </CardTitle>
-                <p className="text-black/70 font-foundation-sans">{user.email}</p>
-              </div>
+        {user ? (
+          <div className="space-y-6 border border-black p-8">
+            <div className="grid gap-6">
+              <label className="text-xs uppercase tracking-[0.3em] text-black/70">
+                First Name
+                <input
+                  type="text"
+                  value={user.user_metadata?.first_name || ''}
+                  readOnly
+                  className="mt-2 w-full border border-black px-4 py-3 font-aileron-regular"
+                />
+              </label>
+              <label className="text-xs uppercase tracking-[0.3em] text-black/70">
+                Last Name
+                <input
+                  type="text"
+                  value={user.user_metadata?.last_name || ''}
+                  readOnly
+                  className="mt-2 w-full border border-black px-4 py-3 font-aileron-regular"
+                />
+              </label>
+              <label className="text-xs uppercase tracking-[0.3em] text-black/70">
+                Email
+                <input
+                  type="email"
+                  value={user.email || ''}
+                  readOnly
+                  className="mt-2 w-full border border-black px-4 py-3 font-aileron-regular"
+                />
+              </label>
+            </div>
 
-              <div className="slide-up" style={{animationDelay: '0.2s'}}>
-                <CardTitle className="text-lg font-aileron-regular text-black mb-2">
-                  Member Since
-                </CardTitle>
-                <p className="text-black/70 font-foundation-sans">
-                  {new Date(user.created_at).toLocaleDateString()}
-                </p>
-              </div>
-
-              <div className="pt-4 slide-up" style={{animationDelay: '0.3s'}}>
-                <Button
-                  onClick={async () => {
-                    await supabase.auth.signOut()
-                    window.location.href = '/sign-in'
-                  }}
-                  variant="outline"
-                  className="text-black border-black hover:bg-black hover:text-white transition-all duration-200 hover-lift"
-                >
-                  Sign Out
-                </Button>
-              </div>
-            </CardContent>
-          ) : (
-            <CardContent className="text-center fade-in">
-              <p className="text-black/70 mb-4 font-foundation-sans">
-                Please sign in to view your account information.
-              </p>
+            <div className="flex flex-col gap-3">
               <Button
-                onClick={() => (window.location.href = '/sign-in')}
-                className="bg-black text-white hover:bg-black/90 transition-all duration-200 hover-lift"
+                onClick={sendPasswordReset}
+                variant="outline"
+                className="rounded-none border border-black text-black uppercase tracking-[0.3em] py-4"
               >
-                Sign In
+                Reset password via email
               </Button>
-            </CardContent>
-          )}
-        </Card>
+              <Button
+                onClick={async () => {
+                  await supabase.auth.signOut()
+                  window.location.href = '/sign-in'
+                }}
+                className="rounded-none border border-black bg-black text-white uppercase tracking-[0.3em] py-4"
+              >
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="border border-black p-8 text-center">
+            <p className="text-black/70 mb-4 font-aileron-regular">
+              Please sign in to view your account information.
+            </p>
+            <Button
+              onClick={() => (window.location.href = '/sign-in')}
+              className="rounded-none border border-black bg-black text-white uppercase tracking-[0.3em] py-4"
+            >
+              Sign In
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
