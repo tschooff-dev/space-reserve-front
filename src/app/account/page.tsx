@@ -98,6 +98,14 @@ function AccountContent() {
             </div>
 
             <div className="flex flex-col gap-3">
+              <Link href="/settings" className="inline-block">
+                <Button
+                  variant="outline"
+                  className="w-full rounded-none border border-black text-black uppercase tracking-[0.3em] py-4"
+                >
+                  Typography Settings
+                </Button>
+              </Link>
               <Button
                 onClick={sendPasswordReset}
                 variant="outline"
@@ -114,14 +122,6 @@ function AccountContent() {
               >
                 Sign Out
               </Button>
-              <Link href="/settings" className="inline-block">
-                <Button
-                  variant="outline"
-                  className="w-full rounded-none border border-black text-black uppercase tracking-[0.3em] py-4"
-                >
-                  Typography Settings
-                </Button>
-              </Link>
             </div>
           </div>
         ) : (
