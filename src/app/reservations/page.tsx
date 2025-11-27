@@ -7,7 +7,7 @@ import {Button} from '@/components/ui/button'
 import {Card, CardHeader, CardTitle} from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import Navigation from '@/components/navigation'
-import Loading from '@/components/loading'
+import LoadingSpinner from '@/components/loading'
 import Image from 'next/image'
 import type {User} from '@supabase/supabase-js'
 
@@ -63,6 +63,8 @@ function ReservationsContent() {
     amenity: boolean
   }>({reservation: true, hotel: false, amenity: false})
   const [copiedId, setCopiedId] = useState(false)
+  const [reservationToCancel, setReservationToCancel] = useState<Reservation | null>(null)
+  const [isCancelling, setIsCancelling] = useState(false)
   const router = useRouter()
   const supabase = useMemo(() => createClient(), [])
 
@@ -156,26 +158,25 @@ function ReservationsContent() {
     checkUser()
   }, [fetchReservations, supabase.auth])
 
-  const handleCancelReservation = async (reservationId: string) => {
-    if (!confirm('Are you sure you want to cancel this reservation?')) {
-      return
-    }
+  const handleCancelReservation = async () => {
+    if (!reservationToCancel) return
 
+    setIsCancelling(true)
     try {
-      const {error} = await supabase.from('reservations').delete().eq('id', reservationId)
+      const {error} = await supabase.from('reservations').delete().eq('id', reservationToCancel.id)
 
       if (error) {
         console.error('Error canceling reservation:', error)
         alert('Error canceling reservation. Please try again.')
-      } else {
-        // Refresh reservations
-        if (user) {
-          fetchReservations(user.id)
-        }
+      } else if (user) {
+        fetchReservations(user.id)
       }
     } catch (error) {
       console.error('Error:', error)
       alert('An error occurred. Please try again.')
+    } finally {
+      setIsCancelling(false)
+      setReservationToCancel(null)
     }
   }
 
@@ -186,7 +187,7 @@ function ReservationsContent() {
         <div className="max-w-4xl mx-auto px-4 py-8">
           <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up uppercase tracking-[0.3em]">Reservations</h1>
           <div className="bg-white border border-black rounded-none p-6 flex items-center justify-center min-h-[400px]">
-            <Loading text="Loading your reservations..." size="lg" />
+            <LoadingSpinner />
           </div>
         </div>
       </div>
@@ -227,22 +228,22 @@ function ReservationsContent() {
         </div>
 
 
-        {reservations.length === 0 ? (
-          <div className="border border-black p-8 flex flex-col gap-6 fade-in">
-            <div>
-              <p className="text-xs font-aileron-regular uppercase tracking-[0.3em] text-black/70">
-                Pool
-              </p>
-              <p className="mt-4 text-3xl font-aileron-light text-black">Reserve a private space</p>
-            </div>
-            <Button
-              onClick={() => router.push('/hotels')}
-              className="border border-black bg-white text-black rounded-none uppercase tracking-[0.3em] py-4 hover:bg-black hover:text-white transition-colors"
-            >
-              Continue
-            </Button>
+        <div className="border border-black p-8 flex flex-col gap-6 fade-in mb-10">
+          <div>
+            <p className="text-xs font-aileron-regular uppercase tracking-[0.3em] text-black/70">
+              Pool
+            </p>
+            <p className="mt-4 text-3xl font-aileron-light text-black">Reserve a private space</p>
           </div>
-        ) : (
+          <Button
+            onClick={() => router.push('/hotels')}
+            className="border border-black bg-white text-black rounded-none uppercase tracking-[0.3em] py-4 hover:bg-black hover:text-white transition-colors"
+          >
+            Continue
+          </Button>
+        </div>
+
+        {reservations.length > 0 && (
           <div className="space-y-3 sm:space-y-4">
             {reservations.map((reservation, index) => (
               <Card
@@ -283,13 +284,13 @@ function ReservationsContent() {
                           setSelectedReservation(reservation)
                           setOpenSections({reservation: true, hotel: false, amenity: false})
                         }}
-                        className="flex-1 border border-black bg-white text-black rounded-none uppercase tracking-[0.3em] py-3 hover:bg-black hover:text-white transition-colors"
+                        className="flex-1 border border-black bg-black text-white rounded-none uppercase tracking-[0.3em] py-3 hover:bg-white hover:text-black transition-colors"
                       >
                         Details
                       </Button>
                       <Button
-                        onClick={() => handleCancelReservation(reservation.id)}
-                        className="flex-1 border border-black bg-black text-white rounded-none uppercase tracking-[0.3em] py-3 hover:bg-white hover:text-black transition-colors"
+                        onClick={() => setReservationToCancel(reservation)}
+                        className="flex-1 border border-black bg-white text-black rounded-none uppercase tracking-[0.3em] py-3 hover:bg-black hover:text-white transition-colors"
                       >
                         Cancel
                       </Button>
@@ -298,6 +299,64 @@ function ReservationsContent() {
                 </CardHeader>
               </Card>
             ))}
+          </div>
+        )}
+
+        {reservationToCancel && (
+          <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => !isCancelling && setReservationToCancel(null)}
+          >
+            <div
+              className="bg-white border-2 border-black w-full max-w-lg sm:max-w-xl p-8 flex flex-col gap-6"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="space-y-2">
+                <p className="text-xs uppercase tracking-[0.4em] text-black/60">Cancel Reservation</p>
+                <h3 className="text-2xl font-aileron-light text-black">Are you sure?</h3>
+                <p className="text-sm text-black/70 font-aileron-regular">
+                  This will release your reserved seat for other guests.
+                </p>
+              </div>
+
+              <div className="text-sm text-black font-aileron-regular space-y-1">
+                <p className="uppercase tracking-[0.3em]">
+                  {reservationToCancel.hotel?.name || reservationToCancel.hotel_slug.replace('-', ' ')}
+                </p>
+                <p>{reservationToCancel.amenity?.displayName || reservationToCancel.amenity_type}</p>
+                {reservationToCancel.reservation_date && (
+                  <p>
+                    {new Date(
+                      reservationToCancel.reservation_date + 'T00:00:00'
+                    ).toLocaleDateString('en-US', {
+                      weekday: 'short',
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </p>
+                )}
+                <p>{formatTimeBlock(reservationToCancel.time_block)}</p>
+                <p>Seat {reservationToCancel.seat_number}</p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  onClick={() => setReservationToCancel(null)}
+                  disabled={isCancelling}
+                  className="flex-1 border border-black bg-white text-black rounded-none uppercase tracking-[0.3em] py-3 hover:bg-black hover:text-white transition-colors disabled:opacity-50"
+                >
+                  Keep Reservation
+                </Button>
+                <Button
+                  onClick={handleCancelReservation}
+                  disabled={isCancelling}
+                  className="flex-1 border border-black bg-black text-white rounded-none uppercase tracking-[0.3em] py-3 hover:bg-white hover:text-black transition-colors disabled:opacity-50"
+                >
+                  {isCancelling ? 'Canceling...' : 'Cancel Reservation'}
+                </Button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -776,10 +835,8 @@ function LoadingFallback() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-light text-black mb-4">Loading...</h1>
-        </div>
+      <div className="max-w-4xl mx-auto px-4 py-8 flex items-center justify-center">
+        <LoadingSpinner />
       </div>
     </div>
   )

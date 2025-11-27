@@ -1,62 +1,39 @@
 import React from 'react'
-import {Skeleton} from '@/components/ui/skeleton'
 
-interface LoadingProps {
-  text?: string
-  size?: 'sm' | 'md' | 'lg'
+type SpinnerSize = 'sm' | 'md' | 'lg'
+
+interface LoadingSpinnerProps {
+  size?: SpinnerSize
   className?: string
+  label?: string
 }
 
-export default function Loading({text = 'Loading...', size = 'md', className = ''}: LoadingProps) {
-  const sizeClasses = {
-    sm: 'w-6 h-6',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12',
-  }
+const sizeClasses: Record<SpinnerSize, string> = {
+  sm: 'h-6 w-6',
+  md: 'h-8 w-8',
+  lg: 'h-12 w-12',
+}
 
+export default function LoadingSpinner({
+  size = 'md',
+  className = '',
+  label = 'Loading',
+}: LoadingSpinnerProps) {
+  return (
+    <span
+      role="status"
+      aria-label={label}
+      className={`inline-block rounded-full border-2 border-black/20 border-t-black animate-spin ${sizeClasses[size]} ${className}`.trim()}
+    />
+  )
+}
+
+export function LoadingOverlay({size = 'md', className = '', label}: LoadingSpinnerProps) {
   return (
     <div
-      className={`flex flex-col items-center justify-center space-y-3 min-h-[200px] py-8 ${className}`}
+      className={`fixed inset-0 bg-white/90 flex items-center justify-center z-50 ${className}`.trim()}
     >
-      <div className={`loading-spinner ${sizeClasses[size]}`}></div>
-      <p className="font-foundation-sans text-black/70 text-lg">{text}</p>
-    </div>
-  )
-}
-
-export function LoadingOverlay({text = 'Loading...', size = 'md'}: LoadingProps) {
-  return (
-    <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
-      <Loading text={text} size={size} />
-    </div>
-  )
-}
-
-export function LoadingDots({className = ''}: {className?: string}) {
-  return (
-    <div className={`loading-dots ${className}`}>
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  )
-}
-
-export function LoadingSkeleton({className = ''}: {className?: string}) {
-  return <Skeleton className={className} />
-}
-
-export function LoadingCompact({text = 'Loading...', size = 'md', className = ''}: LoadingProps) {
-  const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-6 h-6',
-    lg: 'w-8 h-8',
-  }
-
-  return (
-    <div className={`flex items-center space-x-3 ${className}`}>
-      <div className={`loading-spinner ${sizeClasses[size]}`}></div>
-      <p className="font-foundation-sans text-black/70">{text}</p>
+      <LoadingSpinner size={size} label={label} />
     </div>
   )
 }

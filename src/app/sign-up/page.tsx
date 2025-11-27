@@ -156,7 +156,7 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full border border-black bg-white text-black uppercase tracking-[0.3em] text-xs sm:text-sm py-4 transition-colors disabled:opacity-50"
+              className="w-full border border-black bg-black text-white uppercase tracking-[0.3em] text-xs sm:text-sm py-4 transition-colors hover:bg-white hover:text-black disabled:opacity-50"
             >
               {loading ? 'CREATING...' : 'SIGN UP'}
             </button>

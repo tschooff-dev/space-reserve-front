@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {createClient} from '@/lib/supabase'
 import Navigation from '@/components/navigation'
 import {Button} from '@/components/ui/button'
-import Loading from '@/components/loading'
+import LoadingSpinner from '@/components/loading'
 import type {User} from '@supabase/supabase-js'
 
 function AccountContent() {
@@ -46,7 +46,7 @@ function AccountContent() {
         <div className="max-w-4xl mx-auto px-4 py-8">
           <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up">Account</h1>
           <div className="bg-white border border-black rounded-none p-6 flex items-center justify-center min-h-[400px]">
-            <Loading text="Loading your account..." size="lg" />
+            <LoadingSpinner />
           </div>
         </div>
       </div>
@@ -149,7 +149,7 @@ function AccountLoadingFallback() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up">Account</h1>
         <div className="bg-white border border-gray-200 rounded-lg p-6 flex items-center justify-center min-h-[400px]">
-          <Loading text="Loading your account..." size="lg" />
+          <LoadingSpinner />
         </div>
       </div>
     </div>

@@ -56,11 +56,11 @@ export default async function Home() {
             </Link>
           </div>
 
-          <div className="px-6 sm:px-10 pb-32 sm:pb-40">
+          <div className="px-6 sm:px-10 pb-32 sm:pb-40 flex flex-col items-center text-center">
             <p className="text-white/80 uppercase tracking-[0.5em] text-xs sm:text-sm mb-5">
               {heroName}
             </p>
-            <div className="text-white font-aileron-light leading-tight space-y-2">
+            <div className="text-white font-aileron-light leading-tight space-y-2 max-w-4xl">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl">PRIVATE AMENITIES</h1>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white/70 tracking-[0.5em] uppercase">
                 WELCOME
@@ -68,11 +68,11 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="px-6 sm:px-10 pb-12 sm:pb-16">
+          <div className="px-6 sm:px-10 pb-12 sm:pb-16 flex justify-center">
             <Link
               href="#access"
               prefetch={false}
-              className="inline-flex items-center justify-center w-full sm:w-auto px-12 py-4 border border-black bg-white text-black text-xs sm:text-sm uppercase tracking-[0.4em] hover:bg-black hover:text-white transition-colors duration-300"
+              className="inline-flex items-center justify-center w-full sm:w-auto px-12 py-4 border border-black bg-black text-white text-xs sm:text-sm uppercase tracking-[0.4em] hover:bg-white hover:text-black transition-colors duration-300"
             >
               CONTINUE
             </Link>
