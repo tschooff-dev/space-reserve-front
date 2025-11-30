@@ -551,7 +551,7 @@ function ReservationsContent() {
                         <div className="pt-4">
                           <Button
                             onClick={() => {
-                              handleCancelReservation(selectedReservation.id)
+                              setReservationToCancel(selectedReservation)
                               setSelectedReservation(null)
                             }}
                             variant="outline"
