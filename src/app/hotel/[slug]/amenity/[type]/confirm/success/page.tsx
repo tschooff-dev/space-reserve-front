@@ -1,13 +1,26 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Navigation from '@/components/navigation'
 import {Button} from '@/components/ui/button'
+import BookingCompleteTracker from '@/components/booking-complete-tracker'
 
 export default function ReservationSuccessPage() {
+  const [booking, setBooking] = useState<{ amenityType: string; hotelName: string } | null>(null)
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem('lastBooking')
+    if (stored) {
+      setBooking(JSON.parse(stored))
+      sessionStorage.removeItem('lastBooking')
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
+      {booking && <BookingCompleteTracker amenityType={booking.amenityType} hotelName={booking.hotelName} />}
       <main className="max-w-3xl mx-auto px-6 py-20 space-y-6">
         <div>
           <p className="text-sm uppercase tracking-[0.4em] text-black/70">Reservation</p>

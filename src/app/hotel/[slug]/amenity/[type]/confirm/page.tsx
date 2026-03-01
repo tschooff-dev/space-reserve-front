@@ -6,6 +6,7 @@ import Navigation from '@/components/navigation'
 import {Button} from '@/components/ui/button'
 import {createClient} from '@/lib/supabase'
 import posthog from 'posthog-js'
+import ConfirmTracker from '@/components/confirm-tracker'
 
 interface ReservationDraft {
   hotelSlug: string
@@ -82,6 +83,7 @@ export default function ConfirmationPage() {
         })
       }
 
+      sessionStorage.setItem('lastBooking', JSON.stringify({ amenityType: reservation.amenityType, hotelName: reservation.hotelName }))
       localStorage.removeItem('reservation')
       router.push(
         `/hotel/${reservation.hotelSlug}/amenity/${reservation.amenityType}/confirm/success`
@@ -107,6 +109,14 @@ export default function ConfirmationPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
+      {reservation && (
+        <ConfirmTracker
+          amenityType={reservation.amenityType}
+          date={reservation.date}
+          timeSlot={reservation.timeSlot}
+          seats={reservation.seats}
+        />
+      )}
 
       <main className="max-w-3xl mx-auto px-6 py-16">
         <div className="mb-10 space-y-3">
