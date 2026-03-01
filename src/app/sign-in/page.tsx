@@ -5,6 +5,7 @@ import Link from 'next/link'
 import {useRouter} from 'next/navigation'
 import {Alert, AlertDescription} from '@/components/ui/alert'
 import {createClient} from '@/lib/supabase'
+import posthog from 'posthog-js'
 
 export default function SignInPage() {
   const supabase = useMemo(() => createClient(), [])
@@ -24,7 +25,7 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
-      const {error} = await supabase.auth.signInWithPassword({
+      const {data, error} = await supabase.auth.signInWithPassword({
         email,
         password,
       })
@@ -32,9 +33,18 @@ export default function SignInPage() {
       if (error) {
         setMessage(error.message)
       } else {
+        if (data.user) {
+          posthog.identify(data.user.id, {
+            email: data.user.email,
+          })
+          posthog.capture('user_signed_in', {
+            email: data.user.email,
+          })
+        }
         router.push('/reservations')
       }
-    } catch {
+    } catch (err) {
+      posthog.captureException(err)
       setMessage('An unexpected error occurred')
     } finally {
       setLoading(false)

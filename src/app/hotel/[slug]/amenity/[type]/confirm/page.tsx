@@ -5,6 +5,7 @@ import {useRouter} from 'next/navigation'
 import Navigation from '@/components/navigation'
 import {Button} from '@/components/ui/button'
 import {createClient} from '@/lib/supabase'
+import posthog from 'posthog-js'
 
 interface ReservationDraft {
   hotelSlug: string
@@ -64,15 +65,30 @@ export default function ConfirmationPage() {
 
         if (error) {
           console.error('Error creating reservation:', error)
+          posthog.captureException(error)
           alert('Unable to confirm right now. Please try again.')
           return
         }
+
+        posthog.capture('reservation_confirmed', {
+          hotel_slug: reservation.hotelSlug,
+          hotel_name: reservation.hotelName,
+          amenity_type: reservation.amenityType,
+          amenity_name: reservation.amenityName,
+          seats: reservation.seats,
+          seat_count: reservation.seats.length,
+          date: reservation.date,
+          time_slot: reservation.timeSlot,
+        })
       }
 
       localStorage.removeItem('reservation')
-      router.push(`/hotel/${reservation.hotelSlug}/amenity/${reservation.amenityType}/confirm/success`)
+      router.push(
+        `/hotel/${reservation.hotelSlug}/amenity/${reservation.amenityType}/confirm/success`
+      )
     } catch (error) {
       console.error('Error:', error)
+      posthog.captureException(error)
       alert('An unexpected error occurred. Please try again.')
     } finally {
       setLoading(false)

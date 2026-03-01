@@ -10,6 +10,7 @@ import Navigation from '@/components/navigation'
 import LoadingSpinner from '@/components/loading'
 import Image from 'next/image'
 import type {User} from '@supabase/supabase-js'
+import posthog from 'posthog-js'
 
 interface Reservation {
   id: string
@@ -167,12 +168,26 @@ function ReservationsContent() {
 
       if (error) {
         console.error('Error canceling reservation:', error)
+        posthog.captureException(error)
         alert('Error canceling reservation. Please try again.')
-      } else if (user) {
-        fetchReservations(user.id)
+      } else {
+        posthog.capture('reservation_cancelled', {
+          reservation_id: reservationToCancel.id,
+          hotel_slug: reservationToCancel.hotel_slug,
+          hotel_name: reservationToCancel.hotel?.name,
+          amenity_type: reservationToCancel.amenity_type,
+          amenity_name: reservationToCancel.amenity?.displayName,
+          seat_number: reservationToCancel.seat_number,
+          reservation_date: reservationToCancel.reservation_date,
+          time_block: reservationToCancel.time_block,
+        })
+        if (user) {
+          fetchReservations(user.id)
+        }
       }
     } catch (error) {
       console.error('Error:', error)
+      posthog.captureException(error)
       alert('An error occurred. Please try again.')
     } finally {
       setIsCancelling(false)
@@ -185,7 +200,9 @@ function ReservationsContent() {
       <div className="min-h-screen bg-white">
         <Navigation />
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up uppercase tracking-[0.3em]">Reservations</h1>
+          <h1 className="text-3xl font-aileron-light text-black mb-8 slide-up uppercase tracking-[0.3em]">
+            Reservations
+          </h1>
           <div className="bg-white border border-black rounded-none p-6 flex items-center justify-center min-h-[400px]">
             <LoadingSpinner />
           </div>
@@ -226,7 +243,6 @@ function ReservationsContent() {
           </h1>
           <p className="text-sm font-aileron-regular text-black uppercase tracking-[0.3em]">Pool</p>
         </div>
-
 
         <div className="border border-black p-8 flex flex-col gap-6 fade-in mb-10">
           <div>
@@ -281,6 +297,15 @@ function ReservationsContent() {
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Button
                         onClick={() => {
+                          posthog.capture('reservation_details_viewed', {
+                            reservation_id: reservation.id,
+                            hotel_slug: reservation.hotel_slug,
+                            hotel_name: reservation.hotel?.name,
+                            amenity_type: reservation.amenity_type,
+                            amenity_name: reservation.amenity?.displayName,
+                            reservation_date: reservation.reservation_date,
+                            time_block: reservation.time_block,
+                          })
                           setSelectedReservation(reservation)
                           setOpenSections({reservation: true, hotel: false, amenity: false})
                         }}
@@ -312,7 +337,9 @@ function ReservationsContent() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="space-y-2">
-                <p className="text-xs uppercase tracking-[0.4em] text-black/60">Cancel Reservation</p>
+                <p className="text-xs uppercase tracking-[0.4em] text-black/60">
+                  Cancel Reservation
+                </p>
                 <h3 className="text-2xl font-aileron-light text-black">Are you sure?</h3>
                 <p className="text-sm text-black/70 font-aileron-regular">
                   This will release your reserved seat for other guests.
@@ -321,9 +348,12 @@ function ReservationsContent() {
 
               <div className="text-sm text-black font-aileron-regular space-y-1">
                 <p className="uppercase tracking-[0.3em]">
-                  {reservationToCancel.hotel?.name || reservationToCancel.hotel_slug.replace('-', ' ')}
+                  {reservationToCancel.hotel?.name ||
+                    reservationToCancel.hotel_slug.replace('-', ' ')}
                 </p>
-                <p>{reservationToCancel.amenity?.displayName || reservationToCancel.amenity_type}</p>
+                <p>
+                  {reservationToCancel.amenity?.displayName || reservationToCancel.amenity_type}
+                </p>
                 {reservationToCancel.reservation_date && (
                   <p>
                     {new Date(

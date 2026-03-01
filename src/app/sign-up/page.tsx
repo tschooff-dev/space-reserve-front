@@ -5,6 +5,7 @@ import Link from 'next/link'
 import {useRouter} from 'next/navigation'
 import {Alert, AlertDescription} from '@/components/ui/alert'
 import {createClient} from '@/lib/supabase'
+import posthog from 'posthog-js'
 
 export default function SignUpPage() {
   const supabase = useMemo(() => createClient(), [])
@@ -40,7 +41,7 @@ export default function SignUpPage() {
     setLoading(true)
 
     try {
-      const {error} = await supabase.auth.signUp({
+      const {data, error} = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -56,6 +57,18 @@ export default function SignUpPage() {
         setMessage(error.message)
         setMessageType('error')
       } else {
+        if (data.user) {
+          posthog.identify(data.user.id, {
+            email: data.user.email,
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+          })
+          posthog.capture('user_signed_up', {
+            email: data.user.email,
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+          })
+        }
         setMessage('Account created. Check your email to confirm.')
         setMessageType('success')
         setFirstName('')
@@ -64,7 +77,8 @@ export default function SignUpPage() {
         setPassword('')
         setTimeout(() => router.push('/sign-in'), 2500)
       }
-    } catch {
+    } catch (err) {
+      posthog.captureException(err)
       setMessage('An unexpected error occurred')
       setMessageType('error')
     } finally {
@@ -162,7 +176,9 @@ export default function SignUpPage() {
             </button>
 
             {message && (
-              <Alert className={`border ${messageType === 'success' ? 'border-black bg-white' : 'border-black bg-white'}`}>
+              <Alert
+                className={`border ${messageType === 'success' ? 'border-black bg-white' : 'border-black bg-white'}`}
+              >
                 <AlertDescription className="text-black text-sm">{message}</AlertDescription>
               </Alert>
             )}

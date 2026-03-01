@@ -4,6 +4,7 @@ import {useState, useMemo} from 'react'
 import Link from 'next/link'
 import {Alert, AlertDescription} from '@/components/ui/alert'
 import {createClient} from '@/lib/supabase'
+import posthog from 'posthog-js'
 
 export default function ForgotPasswordPage() {
   const supabase = useMemo(() => createClient(), [])
@@ -29,11 +30,15 @@ export default function ForgotPasswordPage() {
         setMessage(error.message)
         setMessageType('error')
       } else {
+        posthog.capture('password_reset_requested', {
+          email,
+        })
         setMessage('Password reset email sent. Check your inbox for the next steps.')
         setMessageType('success')
         setEmail('')
       }
-    } catch {
+    } catch (err) {
+      posthog.captureException(err)
       setMessage('An unexpected error occurred')
       setMessageType('error')
     } finally {

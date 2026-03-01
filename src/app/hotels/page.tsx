@@ -6,6 +6,7 @@ import Navigation from '@/components/navigation'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import LoadingSpinner from '@/components/loading'
 import Image from 'next/image'
+import posthog from 'posthog-js'
 
 interface Hotel {
   name: string
@@ -38,7 +39,6 @@ export default function HotelsPage() {
 
     fetchHotels()
   }, [])
-
 
   if (loading) {
     return (
@@ -80,7 +80,17 @@ export default function HotelsPage() {
                 className="hover:bg-black/5 transition-all duration-200 border-2 border-black"
                 style={{animationDelay: `${index * 0.1}s`}}
               >
-                <div className="cursor-pointer" onClick={() => router.push(`/hotel/${hotel.slug}`)}>
+                <div
+                  className="cursor-pointer"
+                  onClick={() => {
+                    posthog.capture('hotel_selected', {
+                      hotel_slug: hotel.slug,
+                      hotel_name: hotel.name,
+                      hotel_location: hotel.location,
+                    })
+                    router.push(`/hotel/${hotel.slug}`)
+                  }}
+                >
                   {hotel.heroImage && (
                     <div className="relative w-full h-48 overflow-hidden">
                       <Image
@@ -111,7 +121,6 @@ export default function HotelsPage() {
             ))}
           </div>
         )}
-
       </div>
     </div>
   )

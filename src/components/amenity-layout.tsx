@@ -5,6 +5,7 @@ import {useRouter} from 'next/navigation'
 import {Hotel, Amenity} from '@/lib/sanity'
 import {Button} from '@/components/ui/button'
 import {createClient} from '@/lib/supabase'
+import posthog from 'posthog-js'
 
 interface AmenityLayoutProps {
   hotel: Hotel
@@ -54,7 +55,18 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
     if (selectedSeats.includes(seatNumber)) {
       setSelectedSeats(selectedSeats.filter((seat) => seat !== seatNumber))
     } else if (selectedSeats.length < 2) {
-      setSelectedSeats([...selectedSeats, seatNumber])
+      const newSelectedSeats = [...selectedSeats, seatNumber]
+      setSelectedSeats(newSelectedSeats)
+      posthog.capture('amenity_seat_selected', {
+        hotel_slug: hotel.slug,
+        hotel_name: hotel.name,
+        amenity_type: amenity.type,
+        amenity_name: amenity.displayName,
+        seat_number: seatNumber,
+        total_seats_selected: newSelectedSeats.length,
+        selected_date: selectedDate,
+        selected_time_slot: selectedTimeSlot,
+      })
     }
   }
 
@@ -106,6 +118,17 @@ export default function AmenityLayout({hotel, amenity}: AmenityLayoutProps) {
 
   const handleContinue = () => {
     if (selectedSeats.length > 0 && selectedDate && selectedTimeSlot) {
+      posthog.capture('amenity_booking_continued', {
+        hotel_slug: hotel.slug,
+        hotel_name: hotel.name,
+        amenity_type: amenity.type,
+        amenity_name: amenity.displayName,
+        seats: selectedSeats,
+        seat_count: selectedSeats.length,
+        date: selectedDate,
+        time_slot: selectedTimeSlot,
+      })
+
       localStorage.setItem(
         'reservation',
         JSON.stringify({
