@@ -42,10 +42,11 @@ This repo includes a small LaunchDarkly feature-flag demo that supports:
 
 ## 🛠 Tech Stack
 
-- **Frontend**: Next.js 15, TypeScript, Tailwind CSS
+- **Frontend**: Next.js 16 (App Router, Turbopack), TypeScript, Tailwind CSS
 - **CMS**: Sanity (deployed at https://spacereserve.sanity.studio/)
 - **Database**: Supabase (PostgreSQL)
-- **Auth**: Supabase Auth with magic links
+- **Auth**: Supabase Auth
+- **Feature Flags**: LaunchDarkly (React SDK v3)
 - **Deployment**: Vercel
 
 ## ⚙️ Setup Instructions
@@ -94,19 +95,39 @@ Visit [http://localhost:3000](http://localhost:3000)
 
 ## 🔧 LaunchDarkly setup + demo instructions (detailed)
 
+### How the SDK is wired up
+
+```
+layout.tsx
+  └── LaunchDarklyProvider          ← generates stable anonymous user, initializes LDProvider
+        └── LDProvider (LD SDK)     ← opens streaming SSE connection to LaunchDarkly
+              └── hotels/page.tsx
+                    └── useFlags()  ← reads flag value, re-renders automatically on change
+```
+
+The provider (`src/components/launchdarkly-provider.tsx`) creates a stable anonymous user key stored in `localStorage` so the same user gets a consistent flag experience across page loads. The SDK is configured with `streaming: true`, which keeps a persistent Server-Sent Events connection open to LaunchDarkly so flag changes are pushed to the client in real time.
+
+Flag values are read in `src/app/hotels/page.tsx` using the `useFlags()` hook:
+
+```tsx
+const flags = useFlags()
+const hotelsSearchV2Enabled = Boolean(flags.hotelsSearchV2) // camelCased from ‘hotels-search-v2’
+```
+
 ### 1) Create the flag in LaunchDarkly
 
 In LaunchDarkly (in the environment you’ll use locally):
 
 - Create a **boolean** flag with key **`hotels-search-v2`**
+- Enable **”SDKs using Client-side ID”** in the flag settings (required for browser SDKs)
 - Start with it **OFF**
 
 ### 2) Add the LaunchDarkly client-side ID
 
-Add your environment’s **Client-side ID** to `.env.local`:
+Add your environment’s **Client-side ID** (not the SDK key) to `.env.local`:
 
 ```env
-NEXT_PUBLIC_LD_CLIENT_SIDE_ID=...
+NEXT_PUBLIC_LD_CLIENT_SIDE_ID=your_client_side_id_here
 ```
 
 Restart the dev server after changing env vars:
@@ -118,27 +139,24 @@ npm run dev
 ### 3) Verify instant release/rollback (no reload)
 
 1. Open `http://localhost:3000/hotels`
-2. Toggle the flag **ON** in LaunchDarkly
-3. Watch the UI switch instantly:
-   - the “Experimental search (flagged)” search box appears without refreshing
-4. Toggle the flag **OFF** to rollback instantly
+2. Toggle the flag **ON** in the LaunchDarkly dashboard
+3. Watch the UI switch instantly — the “Experimental search (flagged)” search box appears without a page refresh
+4. Toggle the flag **OFF** to roll back instantly
 
 ### 4) Remediate (kill switch trigger via curl)
 
-This repo includes a protected endpoint that force-disables the demo flag via LaunchDarkly’s REST API:
+This repo includes a protected API endpoint that force-disables the demo flag via the LaunchDarkly REST API — no dashboard access required:
 
 - **Route**: `POST /api/ld/kill-switch`
-- **Auth**: send header `x-kill-switch-secret: <LD_KILL_SWITCH_SECRET>`
-- **Config**: requires `LD_API_TOKEN`, `LD_PROJECT_KEY`, and `LD_ENVIRONMENT_KEY`
-
-Example:
+- **Auth**: `x-kill-switch-secret` header matching `LD_KILL_SWITCH_SECRET`
+- **Requires**: `LD_API_TOKEN`, `LD_PROJECT_KEY`, `LD_ENVIRONMENT_KEY` in `.env.local`
 
 ```bash
-curl -X POST "http://localhost:3000/api/ld/kill-switch" \
-  -H "x-kill-switch-secret: $LD_KILL_SWITCH_SECRET"
+curl -X POST “http://localhost:3000/api/ld/kill-switch” \
+  -H “x-kill-switch-secret: $LD_KILL_SWITCH_SECRET”
 ```
 
-If successful, the flag will be turned **OFF** in LaunchDarkly, and any connected clients will revert immediately.
+The endpoint calls the LaunchDarkly REST API to set the flag’s `on` value to `false`. Because streaming is active, connected clients see the feature disappear within seconds — no redeploy needed.
 
 ### 4. Add Sample Data
 
