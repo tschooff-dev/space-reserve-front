@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
   const environmentKey = process.env.LD_ENVIRONMENT_KEY
 
   // The demo flag used in the UI (`src/app/hotels/page.tsx`).
-  const flagKey = 'hotels-search-v2'
+  // We support both plural/singular keys to match likely demo mistakes.
+  const flagKeys = ['hotels-search-v2', 'hotel-search-v2']
 
   if (!token || !projectKey || !environmentKey) {
     return NextResponse.json(
@@ -33,38 +34,42 @@ export async function POST(request: NextRequest) {
 
   // LaunchDarkly uses JSON Patch to update a flag.
   // Docs: https://apidocs.launchdarkly.com/
-  const url = `https://app.launchdarkly.com/api/v2/flags/${encodeURIComponent(
-    projectKey
-  )}/${encodeURIComponent(flagKey)}`
-
-  const patch = [
-    {
-      op: 'replace',
-      path: `/environments/${environmentKey}/on`,
-      value: false,
-    },
-  ]
-
   try {
-    const res = await fetch(url, {
-      method: 'PATCH',
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(patch),
-      cache: 'no-store',
-    })
+    const results = await Promise.all(
+      flagKeys.map(async (flagKey) => {
+        const url = `https://app.launchdarkly.com/api/v2/flags/${encodeURIComponent(
+          projectKey
+        )}/${encodeURIComponent(flagKey)}`
 
-    if (!res.ok) {
-      const text = await res.text().catch(() => '')
-      return NextResponse.json(
-        {error: `LaunchDarkly API error (${res.status})`, details: text},
-        {status: 502}
-      )
-    }
+        const patch = [
+          {
+            op: 'replace',
+            path: `/environments/${environmentKey}/on`,
+            value: false,
+          },
+        ]
 
-    return NextResponse.json({ok: true, flagKey, disabled: true})
+        const res = await fetch(url, {
+          method: 'PATCH',
+          headers: {
+            Authorization: token,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(patch),
+          cache: 'no-store',
+        })
+
+        const text = await res.text().catch(() => '')
+        return {
+          flagKey,
+          ok: res.ok,
+          status: res.status,
+          details: res.ok ? undefined : text,
+        }
+      })
+    )
+
+    return NextResponse.json({ok: true, results})
   } catch (error) {
     return NextResponse.json({error: 'Failed to call LaunchDarkly API', details: String(error)}, {status: 502})
   }

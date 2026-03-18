@@ -4,7 +4,6 @@ import {useEffect, useMemo, useState} from 'react'
 import {createClient} from '@/lib/supabase'
 import {useRouter} from 'next/navigation'
 import type {User} from '@supabase/supabase-js'
-import posthog from 'posthog-js'
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -15,9 +14,7 @@ export default function Navigation() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
   const handleSignOut = async () => {
-    posthog.capture('user_signed_out')
-    posthog.reset()
-    await supabase.auth.signOut()
+await supabase.auth.signOut()
     router.push('/sign-in')
     setCurrentUser(null)
   }

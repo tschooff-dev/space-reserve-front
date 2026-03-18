@@ -3,7 +3,6 @@ import {sanityClient, queries, Hotel} from '@/lib/sanity'
 import HotelHeader from '@/components/hotel-header'
 import AmenityCard from '@/components/amenity-card'
 import Navigation from '@/components/navigation'
-import HotelViewTracker from '@/components/hotel-view-tracker'
 
 interface HotelPageProps {
   params: {
@@ -25,10 +24,7 @@ export default async function HotelPage({params}: HotelPageProps) {
     <div className="min-h-screen bg-white">
       {/* Navigation */}
       <Navigation />
-      
-<HotelViewTracker hotelName={hotel.name} />
-
-      {/* Hero Section */}
+{/* Hero Section */}
       <HotelHeader hotel={hotel} />
 
       {/* Amenities Section */}

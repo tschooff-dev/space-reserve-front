@@ -23,12 +23,7 @@ export default function HotelsPage() {
   const [search, setSearch] = useState('')
   const router = useRouter()
   const flags = useFlags()
-  // LaunchDarkly flag key to create in your LD project:
-  // - boolean flag: "hotels-search-v2"
-  const hotelsSearchV2Enabled =
-    ((flags as Record<string, unknown>)['hotels-search-v2'] as boolean | undefined) ??
-    ((flags as Record<string, unknown>).hotelsSearchV2 as boolean | undefined) ??
-    false
+  const hotelsSearchV2Enabled = Boolean(flags.hotelsSearchV2)
 
   useEffect(() => {
     const fetchHotels = async () => {

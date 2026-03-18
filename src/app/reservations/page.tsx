@@ -10,7 +10,6 @@ import Navigation from '@/components/navigation'
 import LoadingSpinner from '@/components/loading'
 import Image from 'next/image'
 import type {User} from '@supabase/supabase-js'
-import posthog from 'posthog-js'
 
 interface Reservation {
   id: string
@@ -168,26 +167,14 @@ function ReservationsContent() {
 
       if (error) {
         console.error('Error canceling reservation:', error)
-        posthog.captureException(error)
         alert('Error canceling reservation. Please try again.')
       } else {
-        posthog.capture('reservation_cancelled', {
-          reservation_id: reservationToCancel.id,
-          hotel_slug: reservationToCancel.hotel_slug,
-          hotel_name: reservationToCancel.hotel?.name,
-          amenity_type: reservationToCancel.amenity_type,
-          amenity_name: reservationToCancel.amenity?.displayName,
-          seat_number: reservationToCancel.seat_number,
-          reservation_date: reservationToCancel.reservation_date,
-          time_block: reservationToCancel.time_block,
-        })
-        if (user) {
+if (user) {
           fetchReservations(user.id)
         }
       }
     } catch (error) {
       console.error('Error:', error)
-      posthog.captureException(error)
       alert('An error occurred. Please try again.')
     } finally {
       setIsCancelling(false)
@@ -297,16 +284,7 @@ function ReservationsContent() {
                     <div className="flex flex-col sm:flex-row gap-3">
                       <Button
                         onClick={() => {
-                          posthog.capture('reservation_details_viewed', {
-                            reservation_id: reservation.id,
-                            hotel_slug: reservation.hotel_slug,
-                            hotel_name: reservation.hotel?.name,
-                            amenity_type: reservation.amenity_type,
-                            amenity_name: reservation.amenity?.displayName,
-                            reservation_date: reservation.reservation_date,
-                            time_block: reservation.time_block,
-                          })
-                          setSelectedReservation(reservation)
+setSelectedReservation(reservation)
                           setOpenSections({reservation: true, hotel: false, amenity: false})
                         }}
                         className="flex-1 border border-black bg-black text-white rounded-none uppercase tracking-[0.3em] py-3 hover:bg-white hover:text-black transition-colors"

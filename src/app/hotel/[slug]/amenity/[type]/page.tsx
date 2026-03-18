@@ -2,7 +2,6 @@ import {notFound} from 'next/navigation'
 import {sanityClient, queries, Hotel, Amenity} from '@/lib/sanity'
 import AmenityLayout from '@/components/amenity-layout'
 import Navigation from '@/components/navigation'
-import AmenityViewTracker from '@/components/amenity-view-tracker'
 
 interface AmenityPageProps {
   params: {
@@ -26,9 +25,7 @@ export default async function AmenityPage({params}: AmenityPageProps) {
     <div className="min-h-screen bg-white">
       {/* Navigation */}
       <Navigation />
-      <AmenityViewTracker hotelName={hotel.name} amenityType={type} />
-
-      {/* Amenity Layout */}
+{/* Amenity Layout */}
       <AmenityLayout hotel={hotel} amenity={amenity} />
     </div>
   )
