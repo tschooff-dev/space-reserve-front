@@ -3,6 +3,7 @@ import {Inter} from 'next/font/google'
 import localFont from 'next/font/local'
 import './globals.css'
 import {FontLoader} from '@/components/font-loader'
+import LaunchDarklyProvider from '@/components/launchdarkly-provider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -307,7 +308,7 @@ export default function RootLayout({
         className={`${inter.variable} ${aileron.variable} ${foundationSans.variable} ${brandonGrotesque.variable} ${proximaNova.variable} ${metropolis.variable} ${freightDisplay.variable} ${neueHaas.variable} ${graphik.variable} ${circularStd.variable} ${sohne.variable} ${gtAmerica.variable} ${apercu.variable} ${ibmPlexSans.variable} font-sans antialiased`}
       >
         <FontLoader />
-        {children}
+        <LaunchDarklyProvider>{children}</LaunchDarklyProvider>
       </body>
     </html>
   )

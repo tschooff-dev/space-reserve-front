@@ -6,7 +6,7 @@ import Navigation from '@/components/navigation'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import LoadingSpinner from '@/components/loading'
 import Image from 'next/image'
-import posthog from 'posthog-js'
+import {useFlags} from 'launchdarkly-react-client-sdk'
 
 interface Hotel {
   name: string
@@ -20,7 +20,15 @@ interface Hotel {
 export default function HotelsPage() {
   const [hotels, setHotels] = useState<Hotel[]>([])
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
   const router = useRouter()
+  const flags = useFlags()
+  // LaunchDarkly flag key to create in your LD project:
+  // - boolean flag: "hotels-search-v2"
+  const hotelsSearchV2Enabled =
+    ((flags as Record<string, unknown>)['hotels-search-v2'] as boolean | undefined) ??
+    ((flags as Record<string, unknown>).hotelsSearchV2 as boolean | undefined) ??
+    false
 
   useEffect(() => {
     const fetchHotels = async () => {
@@ -39,6 +47,18 @@ export default function HotelsPage() {
 
     fetchHotels()
   }, [])
+
+  const visibleHotels =
+    hotelsSearchV2Enabled && search.trim()
+      ? hotels.filter((h) => {
+          const q = search.trim().toLowerCase()
+          return (
+            h.name.toLowerCase().includes(q) ||
+            (h.location?.toLowerCase().includes(q) ?? false) ||
+            (h.description?.toLowerCase().includes(q) ?? false)
+          )
+        })
+      : hotels
 
   if (loading) {
     return (
@@ -68,13 +88,36 @@ export default function HotelsPage() {
           Select a hotel to view available amenities and make a reservation
         </p>
 
-        {hotels.length === 0 ? (
+        {hotelsSearchV2Enabled && hotels.length > 0 && (
+          <div className="mb-8 sm:mb-10 border-2 border-black p-4">
+            <p className="text-xs uppercase tracking-[0.35em] text-black/60 mb-3">
+              Experimental search (flagged)
+            </p>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search hotels by name, city, or description"
+              className="w-full border border-black bg-white px-4 py-3 font-foundation-sans text-black placeholder:text-black/40 outline-none focus:ring-2 focus:ring-black/20"
+            />
+            {search.trim() && (
+              <p className="mt-2 text-sm text-black/70 font-foundation-sans">
+                Showing {visibleHotels.length} of {hotels.length}
+              </p>
+            )}
+          </div>
+        )}
+
+        {visibleHotels.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-black font-foundation-sans">No hotels available at the moment.</p>
+            <p className="text-black font-foundation-sans">
+              {hotels.length === 0
+                ? 'No hotels available at the moment.'
+                : 'No hotels match your search.'}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {hotels.map((hotel, index) => (
+            {visibleHotels.map((hotel, index) => (
               <Card
                 key={hotel.slug}
                 className="hover:bg-black/5 transition-all duration-200 border-2 border-black"
@@ -83,12 +126,7 @@ export default function HotelsPage() {
                 <div
                   className="cursor-pointer"
                   onClick={() => {
-                    posthog.capture('hotel_selected', {
-                      hotel_slug: hotel.slug,
-                      hotel_name: hotel.name,
-                      hotel_location: hotel.location,
-                    })
-                    router.push(`/hotel/${hotel.slug}`)
+router.push(`/hotel/${hotel.slug}`)
                   }}
                 >
                   {hotel.heroImage && (
