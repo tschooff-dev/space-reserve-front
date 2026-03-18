@@ -22,6 +22,19 @@ export default function HotelsPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const router = useRouter()
+
+  // --- LaunchDarkly feature flag ---
+  // useFlags() returns all flags evaluated for the current user context.
+  // The SDK automatically camelCases flag keys, so 'hotels-search-v2' becomes 'hotelsSearchV2'.
+  //
+  // To recreate this flag in your LaunchDarkly project:
+  //   1. Go to your LaunchDarkly dashboard → Feature Flags → Create Flag
+  //   2. Key: hotels-search-v2  |  Type: Boolean  |  Default: false
+  //   3. Enable "SDKs using Client-side ID" in the flag settings (required for browser SDKs)
+  //   4. Set NEXT_PUBLIC_LD_CLIENT_SIDE_ID in .env.local (see README for details)
+  //
+  // When ON:  shows an experimental hotel search box (filters by name, location, description)
+  // When OFF: normal hotels page with no search — instant toggle, no page reload required
   const flags = useFlags()
   const hotelsSearchV2Enabled = Boolean(flags.hotelsSearchV2)
 

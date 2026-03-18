@@ -29,8 +29,11 @@ This repo includes a small LaunchDarkly feature-flag demo that supports:
 
 ### Assumptions about your environment
 
-- **Node.js**: this project expects a modern Node version (recommended: Node 20+) and npm.
-- **Accounts**: to fully run the app you need Sanity + Supabase credentials; to demo feature flags you need a LaunchDarkly account (trial is fine).
+- **Node.js**: version 20.9.0 or higher is required (Next.js 16 enforces this). If you're on an older version, use `nvm install 20 && nvm use 20` before running.
+- **npm**: comes with Node, no separate install needed.
+- **LaunchDarkly account**: a free trial account is sufficient. Sign up at https://launchdarkly.com/start-trial/. You only need the client-side ID from your environment settings — no paid plan required.
+- **Supabase + Sanity**: required to run the full app (reservations, hotel/amenity data). If you only want to demo the feature flag, you can still load `/hotels` as long as the API returns data — the flag behavior is independent of these services.
+- **No global installs needed**: everything runs via `npm run dev`, no globally installed CLIs required.
 
 ## 📱 User Flow
 
