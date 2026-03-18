@@ -96,6 +96,65 @@ npm run dev
 
 Visit [http://localhost:3000](http://localhost:3000)
 
+## 🎯 Part 2: Context Attributes + Individual & Rule-Based Targeting
+
+### What's flagged
+
+- **Flag key**: `hotels-featured-banner` (boolean)
+- **Location**: `src/app/hotels/page.tsx` + `src/components/featured-banner.tsx`
+- **Behavior**:
+  - **OFF**: normal Hotels page
+  - **ON**: a "Summer Collection" promotional banner appears above the hotel cards
+
+### Context attributes
+
+When a user signs in, the app calls `ldClient.identify()` with their Supabase user data, enriching the LD context with real attributes:
+
+| Attribute | Source | Example |
+|---|---|---|
+| `key` | Supabase user UUID | `"d3f2a1..."` |
+| `email` | Supabase auth | `"jane@company.com"` |
+| `firstName` | Supabase user_metadata | `"Jane"` |
+| `lastName` | Supabase user_metadata | `"Smith"` |
+| `anonymous` | `false` when signed in | `false` |
+
+This happens automatically in `LaunchDarklyIdentifier` inside `src/components/launchdarkly-provider.tsx`. On sign-out, the context reverts to anonymous.
+
+### Individual targeting + Rule-based targeting (active simultaneously)
+
+LaunchDarkly evaluates targeting top-to-bottom and stops at the first match, so individual targets and rules can be active at the same time:
+
+```
+┌─────────────────────────────────────────────────┐
+│  1. Individual targets  (highest priority)       │
+│     → specific users always get true             │
+├─────────────────────────────────────────────────┤
+│  2. Rules                                        │
+│     → everyone matching the rule gets true       │
+├─────────────────────────────────────────────────┤
+│  3. Default variation                            │
+│     → everyone else gets false                   │
+└─────────────────────────────────────────────────┘
+```
+
+**Set up individual targeting:**
+
+1. Go to the `hotels-featured-banner` flag → **Targeting**
+2. Under **Target individuals**, search for a user by email
+3. Set their variation to **true**
+
+**Set up a rule (at the same time):**
+
+1. Click **Add rule**
+2. Set a condition using a context attribute, for example:
+   - `email` **contains** `@company.com` → serve **true**
+   - `firstName` **is one of** `Jane, John` → serve **true**
+3. Save
+
+Both will be active simultaneously. The individually targeted user is matched first; the rule catches everyone else who qualifies. All changes propagate instantly via streaming — no page reload required.
+
+---
+
 ## 🔧 LaunchDarkly setup + demo instructions (detailed)
 
 ### How the SDK is wired up

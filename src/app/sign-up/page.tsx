@@ -65,7 +65,10 @@ setMessage('Account created. Check your email to confirm.')
         setTimeout(() => router.push('/sign-in'), 2500)
       }
     } catch (err) {
-setMessage('An unexpected error occurred')
+      // eslint-disable-next-line no-console
+      console.error('[SignUp] signUp failed', err)
+      const msg = err instanceof Error ? err.message : 'An unexpected error occurred'
+      setMessage(msg)
       setMessageType('error')
     } finally {
       setLoading(false)

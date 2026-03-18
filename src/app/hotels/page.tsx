@@ -7,6 +7,7 @@ import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import LoadingSpinner from '@/components/loading'
 import Image from 'next/image'
 import {useFlags} from 'launchdarkly-react-client-sdk'
+import FeaturedBanner from '@/components/featured-banner'
 
 interface Hotel {
   name: string
@@ -37,6 +38,21 @@ export default function HotelsPage() {
   // When OFF: normal hotels page with no search — instant toggle, no page reload required
   const flags = useFlags()
   const hotelsSearchV2Enabled = Boolean(flags.hotelsSearchV2)
+
+  // --- LaunchDarkly feature flag: hotels-featured-banner (Part 2 demo) ---
+  // Flag key: hotels-featured-banner → camelCased by the SDK to 'hotelsFeaturedBanner'
+  //
+  // This flag demonstrates context-based targeting using real user attributes
+  // (email, firstName, lastName) populated via ldClient.identify() in LaunchDarklyProvider.
+  //
+  // To recreate in LaunchDarkly:
+  //   1. Create a boolean flag with key: hotels-featured-banner
+  //   2. Enable "SDKs using Client-side ID"
+  //   3. Default variation: false
+  //
+  // Individual targeting:  target a specific user by their email in the LD dashboard
+  // Rule-based targeting:  add a rule like "email contains @yourdomain.com → true"
+  const featuredBannerEnabled = Boolean(flags.hotelsFeaturedBanner)
 
   useEffect(() => {
     const fetchHotels = async () => {
@@ -95,6 +111,9 @@ export default function HotelsPage() {
         <p className="text-black/70 font-foundation-sans mb-8 sm:mb-12">
           Select a hotel to view available amenities and make a reservation
         </p>
+
+        {/* Featured banner — visible only to targeted users based on LD context attributes */}
+        {featuredBannerEnabled && <FeaturedBanner />}
 
         {hotelsSearchV2Enabled && hotels.length > 0 && (
           <div className="mb-8 sm:mb-10 border-2 border-black p-4">

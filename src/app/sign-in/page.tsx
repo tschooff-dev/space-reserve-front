@@ -35,7 +35,12 @@ export default function SignInPage() {
 router.push('/reservations')
       }
     } catch (err) {
-setMessage('An unexpected error occurred')
+      // `signInWithPassword` can fail with a network/CORS error which surfaces as "Failed to fetch".
+      // Show the actual message to make local debugging possible.
+      // eslint-disable-next-line no-console
+      console.error('[SignIn] signInWithPassword failed', err)
+      const msg = err instanceof Error ? err.message : 'An unexpected error occurred'
+      setMessage(msg)
     } finally {
       setLoading(false)
     }
