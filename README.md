@@ -11,9 +11,9 @@ A luxury hotel amenity reservation platform built with Next.js, Sanity CMS, and 
 - **Email/password authentication** via Supabase
 - **Responsive design** that works on all devices
 
-## 🚩 Feature Flags (LaunchDarkly demo)
+## 🚩 Feature Flags (LaunchDarkly walkthrough)
 
-This repo includes a small LaunchDarkly feature-flag demo that supports:
+This repo includes a small LaunchDarkly feature-flag walkthrough that supports:
 
 - **Safe release/rollback**: ship code behind a flag, then toggle it on/off.
 - **Instant updates**: toggling a flag updates the UI without a page reload (streaming).
@@ -38,7 +38,7 @@ This repo includes a small LaunchDarkly feature-flag demo that supports:
 - **Node.js**: version 20.9.0 or higher is required (Next.js 16 enforces this). If you're on an older version, use `nvm install 20 && nvm use 20` before running.
 - **npm**: comes with Node, no separate install needed.
 - **LaunchDarkly account**: a free trial account is sufficient. Sign up at https://launchdarkly.com/start-trial/. You only need the client-side ID from your environment settings — no paid plan required.
-- **Supabase + Sanity**: required to run the full app (reservations, hotel/amenity data). If you only want to demo the feature flag, you can still load `/hotels` as long as the API returns data — the flag behavior is independent of these services.
+- **Supabase + Sanity**: required to run the full app (reservations, hotel/amenity data). If you only want to validate the feature flag, you can still load `/hotels` as long as the API returns data — the flag behavior is independent of these services.
 - **No global installs needed**: everything runs via `npm run dev`, no globally installed CLIs required.
 
 ## 📱 User Flow
@@ -161,7 +161,7 @@ Both will be active simultaneously. The individually targeted user is matched fi
 
 ---
 
-## 🔧 LaunchDarkly setup + demo instructions (detailed)
+## 🔧 LaunchDarkly setup + verification steps (detailed)
 
 ### How the SDK is wired up
 
@@ -215,7 +215,7 @@ npm run dev
 
 ### 4) Remediate (kill switch trigger via curl)
 
-This repo includes a protected API endpoint that force-disables the demo flag via the LaunchDarkly REST API — no dashboard access required:
+This repo includes a protected API endpoint that force-disables the flagged feature via the LaunchDarkly REST API — no dashboard access required:
 
 - **Route**: `POST /api/ld/kill-switch`
 - **Auth**: `x-kill-switch-secret` header matching `LD_KILL_SWITCH_SECRET`
@@ -256,7 +256,7 @@ After creating the custom metric (`featured_banner_seen`) and confirming events 
 - **Metric source**: `LaunchDarkly hosted`
 - **Primary metric**: `Featured Banner Seen` (Count)
 - **Randomize by**: `user`
-- **Audience allocation**: `100%` (for faster demo data)
+- **Audience allocation**: `100%` (for faster validation data)
 - **Variations split**: `50/50`
 - **Control**: `false` (banner hidden)
 - **Treatment**: `true` (banner shown)
@@ -264,9 +264,9 @@ After creating the custom metric (`featured_banner_seen`) and confirming events 
 - **Statistical approach**: `Bayesian`
 - **Success threshold**: `95%`
 
-Demo note for interviewers:
+Note for interviewers:
 
-- For this assignment demo, the experiment is run long enough to prove setup and initial data capture.
+- In this sample project, the experiment is run long enough to prove end-to-end setup and initial data capture.
 - In production, the experiment should run until there is sufficient sample size and statistical confidence before making a rollout decision.
 
 ### 7. Add Sample Data
@@ -322,9 +322,9 @@ The app is ready for deployment on Vercel:
 2. Add environment variables in Vercel dashboard
 3. Deploy automatically on push to main branch
 
-## 📱 Demo Mode
+## 📱 Validation Mode
 
-If you want to demo feature flags without signing in:
+If you want to validate feature flags without signing in:
 
 - `hotels-search-v2` works for anonymous users (it uses the anonymous LaunchDarkly context).
 - `hotels-featured-banner` requires a signed-in Supabase user so the app can call `ldClient.identify()` and populate context attributes (`email`, `firstName`, `lastName`, etc.) for targeting.
