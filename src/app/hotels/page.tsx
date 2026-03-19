@@ -1,12 +1,12 @@
 'use client'
 
-import {useEffect, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {useRouter} from 'next/navigation'
 import Navigation from '@/components/navigation'
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import LoadingSpinner from '@/components/loading'
 import Image from 'next/image'
-import {useFlags} from 'launchdarkly-react-client-sdk'
+import {useFlags, useLDClient} from 'launchdarkly-react-client-sdk'
 import FeaturedBanner from '@/components/featured-banner'
 
 interface Hotel {
@@ -23,6 +23,8 @@ export default function HotelsPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const router = useRouter()
+  const ldClient = useLDClient()
+  const bannerSeenTrackedRef = useRef(false)
 
   // --- LaunchDarkly feature flag ---
   // useFlags() returns all flags evaluated for the current user context.
@@ -53,6 +55,17 @@ export default function HotelsPage() {
   // Individual targeting:  target a specific user by their email in the LD dashboard
   // Rule-based targeting:  add a rule like "email contains @yourdomain.com → true"
   const featuredBannerEnabled = Boolean(flags.hotelsFeaturedBanner)
+
+  useEffect(() => {
+    if (!ldClient || !featuredBannerEnabled || bannerSeenTrackedRef.current) return
+
+    // One-shot exposure event for LaunchDarkly metric/experiment tracking.
+    ldClient.track('featured_banner_seen', {
+      source: 'cursor',
+      page: '/hotels',
+    })
+    bannerSeenTrackedRef.current = true
+  }, [ldClient, featuredBannerEnabled])
 
   useEffect(() => {
     const fetchHotels = async () => {

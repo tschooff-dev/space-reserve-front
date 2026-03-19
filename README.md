@@ -8,7 +8,7 @@ A luxury hotel amenity reservation platform built with Next.js, Sanity CMS, and 
 - **Dynamic hotel pages** with customizable amenities
 - **Interactive seat selection** with visual layouts
 - **Real-time reservations** with Supabase integration
-- **Magic link authentication** for seamless user experience
+- **Email/password authentication** via Supabase
 - **Responsive design** that works on all devices
 
 ## 🚩 Feature Flags (LaunchDarkly demo)
@@ -19,13 +19,19 @@ This repo includes a small LaunchDarkly feature-flag demo that supports:
 - **Instant updates**: toggling a flag updates the UI without a page reload (streaming).
 - **Remediation**: a protected "kill switch" endpoint you can trigger via `curl` to force-disable the flag.
 
-### What’s flagged
+### What’s flagged (flag keys used by this app)
 
-- **Flag key**: `hotels-search-v2` (boolean)
-- **Location**: `src/app/hotels/page.tsx`
-- **Behavior**:
-  - **OFF**: normal Hotels page (no search box)
-  - **ON**: shows an “Experimental search (flagged)” search input and filters hotel cards live
+- `hotels-search-v2` (boolean)
+  - **Location**: `src/app/hotels/page.tsx`
+  - **Behavior**:
+    - OFF: normal Hotels page (no search box)
+    - ON: shows an “Experimental search (flagged)” search input and filters hotel cards live
+
+- `hotels-featured-banner` (boolean)
+  - **Location**: `src/app/hotels/page.tsx` + `src/components/featured-banner.tsx`
+  - **Behavior**:
+    - OFF by default
+    - ON only for targeted contexts (individual + rule-based targeting)
 
 ### Assumptions about your environment
 
@@ -37,18 +43,18 @@ This repo includes a small LaunchDarkly feature-flag demo that supports:
 
 ## 📱 User Flow
 
-1. **QR Code** → Sign In/Sign Up page
-2. **Sign In** → Hotel landing page with amenities
-3. **Select Amenity** → Seat selection and time booking
-4. **Confirm** → Reservation confirmation
-5. **Manage** → View and cancel reservations
+1. **Sign in / sign up** (email + password via Supabase)
+2. **Hotels** → hotel landing page with amenity cards
+3. **Select Amenity** → seat selection and time booking
+4. **Confirm** → reservation confirmation
+5. **Reservations** → view and cancel reservations
 
 ## 🛠 Tech Stack
 
 - **Frontend**: Next.js 16 (App Router, Turbopack), TypeScript, Tailwind CSS
 - **CMS**: Sanity (deployed at https://spacereserve.sanity.studio/)
 - **Database**: Supabase (PostgreSQL)
-- **Auth**: Supabase Auth
+- **Auth**: Supabase Auth (email/password)
 - **Feature Flags**: LaunchDarkly (React SDK v3)
 - **Deployment**: Vercel
 
@@ -169,6 +175,8 @@ layout.tsx
 
 The provider (`src/components/launchdarkly-provider.tsx`) creates a stable anonymous user key stored in `localStorage` so the same user gets a consistent flag experience across page loads. The SDK is configured with `streaming: true`, which keeps a persistent Server-Sent Events connection open to LaunchDarkly so flag changes are pushed to the client in real time.
 
+For connectivity verification, the provider also sends a custom tracking event (`ldClient.track('source', { value: 'cursor' })`) after initialization completes.
+
 Flag values are read in `src/app/hotels/page.tsx` using the `useFlags()` hook:
 
 ```tsx
@@ -220,7 +228,48 @@ curl -X POST “http://localhost:3000/api/ld/kill-switch” \
 
 The endpoint calls the LaunchDarkly REST API to set the flag’s `on` value to `false`. Because streaming is active, connected clients see the feature disappear within seconds — no redeploy needed.
 
-### 4. Add Sample Data
+### 5) (For Part 2) Create `hotels-featured-banner` + targeting
+
+To demonstrate context-based targeting, also create this boolean flag:
+
+- **Key**: `hotels-featured-banner`
+- **Type**: Boolean
+- **Default variation**: `false` (OFF)
+- **Enable**: "SDKs using Client-side IDs"
+
+Then set up **Targeting configuration** for your LaunchDarkly environment (commonly `Test`):
+
+- **Individual targeting**:
+  - Use `key` (Supabase user UUID) OR `email` to serve `true`
+- **Rule-based targeting** (add under the **Default rule**):
+  - Example rule: `email` **contains** `@yourdomain.com` → serve `true`
+
+Save changes and hard refresh `http://localhost:3000/hotels` after signing in/out to see the banner appear/disappear.
+
+### 6) (Extra Credit) Experimentation setup
+
+After creating the custom metric (`featured_banner_seen`) and confirming events are arriving, create an experiment on the same flag (`hotels-featured-banner`):
+
+- **Name**: `Featured Banner Impact`
+- **Hypothesis**:  
+  `If we show the featured banner to targeted users, then featured banner impressions will increase because the banner is a prominent above-the-fold element on the hotels page.`
+- **Metric source**: `LaunchDarkly hosted`
+- **Primary metric**: `Featured Banner Seen` (Count)
+- **Randomize by**: `user`
+- **Audience allocation**: `100%` (for faster demo data)
+- **Variations split**: `50/50`
+- **Control**: `false` (banner hidden)
+- **Treatment**: `true` (banner shown)
+- **Variation outside experiment**: `false`
+- **Statistical approach**: `Bayesian`
+- **Success threshold**: `95%`
+
+Demo note for interviewers:
+
+- For this assignment demo, the experiment is run long enough to prove setup and initial data capture.
+- In production, the experiment should run until there is sufficient sample size and statistical confidence before making a rollout decision.
+
+### 7. Add Sample Data
 
 1. Go to [Sanity Studio](https://spacereserve.sanity.studio/)
 2. Create a hotel (e.g., "Aman New York")
@@ -231,7 +280,7 @@ The endpoint calls the LaunchDarkly REST API to set the flag’s `on` value to `
 
 ```
 /                    → Redirects to /sign-in
-/sign-in            → Magic link authentication
+/sign-in            → Supabase email/password authentication
 /hotel/[slug]       → Hotel landing page with amenities
 /hotel/[slug]/amenity/[type] → Seat selection and booking
 /hotel/[slug]/amenity/[type]/confirm → Reservation confirmation
@@ -275,10 +324,10 @@ The app is ready for deployment on Vercel:
 
 ## 📱 Demo Mode
 
-For testing without authentication:
+If you want to demo feature flags without signing in:
 
-- Click "Continue as Guest" on the sign-in page
-- This bypasses auth and allows full functionality
+- `hotels-search-v2` works for anonymous users (it uses the anonymous LaunchDarkly context).
+- `hotels-featured-banner` requires a signed-in Supabase user so the app can call `ldClient.identify()` and populate context attributes (`email`, `firstName`, `lastName`, etc.) for targeting.
 
 ## 🔧 Development
 
@@ -298,7 +347,7 @@ For testing without authentication:
 
 ### Supabase Integration
 
-- Magic link authentication
+- Email/password authentication
 - Real-time database for reservations
 - Row-level security for user data
 
