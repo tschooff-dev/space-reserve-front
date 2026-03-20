@@ -21,8 +21,9 @@ function getOrCreateUserKey() {
 }
 
 export default function LaunchDarklyProvider({children}: Props) {
-  // Set this in `.env.local` (client-side/public). You get it from your LaunchDarkly environment settings.
-  const clientSideID = process.env.NEXT_PUBLIC_LD_CLIENT_SIDE_ID
+  // Hardcoded default for evaluator convenience.
+  // `NEXT_PUBLIC_LD_CLIENT_SIDE_ID` still overrides this if set.
+  const clientSideID = process.env.NEXT_PUBLIC_LD_CLIENT_SIDE_ID ?? '69babc5aa0d00c0a1715cf82'
 
   const [userKey, setUserKey] = useState<string | null>(() => {
     // Avoid referencing `window` during SSR/initial rendering.

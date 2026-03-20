@@ -60,6 +60,19 @@ This repo includes a small LaunchDarkly feature-flag walkthrough that supports:
 
 ## ⚙️ Setup Instructions
 
+### Evaluator convenience
+
+For evaluator convenience in this submission, `.env.local` is included in the repository with working test values.  
+You can run the project immediately with:
+
+```bash
+npm install
+npm run dev
+```
+
+If you prefer to use your own environment values, copy `.env.example` to `.env.local` and replace all placeholders.
+Supabase and LaunchDarkly also have hardcoded defaults in code, so `.env.local` is optional for a quick local run.
+
 ### 1. Environment Variables
 
 Create a `.env.local` file in the root directory:
