@@ -33,10 +33,10 @@ export function ChatWidget() {
   const ldClient = useLDClient()
   const pathname = usePathname()
 
-  const chatbotEnabled = Boolean(flags['ai-chatbot-enabled'])
-  const modelConfig: ModelConfig = (flags['ai-model-config'] as ModelConfig) ?? DEFAULT_MODEL_CONFIG
-  const promptVariant: string = (flags['ai-system-prompt-variant'] as string) ?? 'concierge'
-  const showSuggestedQuestions = Boolean(flags['ai-suggested-questions'])
+  const chatbotEnabled = Boolean(flags.aiChatbotEnabled)
+  const modelConfig: ModelConfig = (flags.aiModelConfig as ModelConfig) ?? DEFAULT_MODEL_CONFIG
+  const promptVariant: string = (flags.aiSystemPromptVariant as string) ?? 'concierge'
+  const showSuggestedQuestions = Boolean(flags.aiSuggestedQuestions)
 
   if (!chatbotEnabled) return null
 
