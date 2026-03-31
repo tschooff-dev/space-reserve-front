@@ -60,7 +60,14 @@ export default function LaunchDarklyProvider({children}: Props) {
       // Bootstrap flags so the SDK evaluates them immediately on load.
       // Add any new flag keys here alongside their default (off) values.
       // Flag keys must match exactly what you created in your LaunchDarkly project.
-      flags={{'hotels-search-v2': false, 'hotels-featured-banner': false}}
+      flags={{
+          'hotels-search-v2': false,
+          'hotels-featured-banner': false,
+          'ai-chatbot-enabled': false,
+          'ai-model-config': {provider: 'anthropic', model: 'claude-haiku-4-5-20251001'},
+          'ai-system-prompt-variant': 'concierge',
+          'ai-suggested-questions': false,
+        }}
       options={{
         streaming: true,
         evaluationReasons: true,

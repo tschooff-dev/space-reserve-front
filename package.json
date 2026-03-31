@@ -13,6 +13,7 @@
     "pre:push": "npm run format && npm run lint:fix && npm run build"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
     "@radix-ui/react-slot": "^1.2.3",
     "@sanity/image-url": "^1.2.0",
     "@supabase/supabase-js": "^2.57.4",
