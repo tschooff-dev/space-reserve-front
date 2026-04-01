@@ -16,11 +16,22 @@ const DEFAULT_MODEL_CONFIG: ModelConfig = {
 }
 
 function buildPageContext(pathname: string): string {
+  const hotelMatch = pathname.match(/\/hotel\/([^/]+)/)
+  const amenityMatch = pathname.match(/\/amenity\/([^/]+)/)
+  const hotelSlug = hotelMatch?.[1]
+  const amenityType = amenityMatch?.[1]
+
   if (pathname === '/') return 'Home page — hotel discovery landing page'
   if (pathname === '/hotels') return 'Hotels listing page — browsing available hotels'
-  if (pathname.includes('/amenity') && pathname.includes('/confirm')) return 'Reservation confirmation page — reviewing a booking'
-  if (pathname.includes('/amenity')) return 'Amenity booking page — selecting amenity options and time slots'
-  if (pathname.match(/\/hotel\//)) return 'Hotel detail page — viewing hotel amenities'
+  if (hotelSlug && amenityType && pathname.includes('/confirm')) {
+    return `Reservation confirmation page. Hotel slug: "${hotelSlug}". Amenity type: "${amenityType}".`
+  }
+  if (hotelSlug && amenityType) {
+    return `Amenity booking page. Hotel slug: "${hotelSlug}". Amenity type: "${amenityType}". Guest is selecting a date and time slot.`
+  }
+  if (hotelSlug) {
+    return `Hotel detail page. Hotel slug: "${hotelSlug}". Guest is browsing available amenities.`
+  }
   if (pathname === '/reservations') return 'Reservations page — viewing existing bookings'
   if (pathname === '/account') return 'Account settings page'
   if (pathname === '/customer-service') return 'Customer service page'
