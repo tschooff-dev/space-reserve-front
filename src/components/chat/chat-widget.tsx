@@ -1,8 +1,9 @@
 'use client'
 
-import {useEffect, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {useFlags, useLDClient} from 'launchdarkly-react-client-sdk'
 import {usePathname} from 'next/navigation'
+import {createClient} from '@/lib/supabase'
 import {ChatPanel} from './chat-panel'
 
 function buildPageContext(pathname: string): string {
@@ -34,11 +35,14 @@ export function ChatWidget() {
   const flags = useFlags()
   const ldClient = useLDClient()
   const pathname = usePathname()
+  const supabase = useMemo(() => createClient(), [])
 
   useEffect(() => {
-    const key = localStorage.getItem('ld_user_key') ?? undefined
-    setUserKey(key ?? undefined)
-  }, [])
+    supabase.auth.getUser().then(({data: {user}}) => {
+      // Use Supabase UUID when logged in (matches LD identify() call), else fall back to anon key
+      setUserKey(user?.id ?? localStorage.getItem('ld_user_key') ?? undefined)
+    })
+  }, [supabase])
 
   const chatbotEnabled = Boolean(flags.aiChatbotEnabled)
   const showSuggestedQuestions = Boolean(flags.aiSuggestedQuestions)
