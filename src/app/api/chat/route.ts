@@ -52,7 +52,16 @@ export async function POST(req: NextRequest) {
     .map((m: {content: string}) => m.content)
     .join('\n')
 
-  const systemPrompt = pageContext ? `${systemMessages}\n\nCurrent page context: ${pageContext}` : systemMessages
+  const today = new Date().toISOString().split('T')[0]
+  const dayOfWeek = new Date().toLocaleDateString('en-US', {weekday: 'long'})
+
+  const systemPrompt = [
+    systemMessages,
+    `Today is ${dayOfWeek}, ${today}. Always resolve relative dates like "this Saturday" or "tomorrow" yourself using this date — never ask the guest to provide a date in any specific format.`,
+    pageContext ? `Current page context: ${pageContext}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n\n')
 
   const anthropic = new Anthropic({apiKey: process.env.ANTHROPIC_API_KEY})
   const messagesForAPI: Anthropic.MessageParam[] = [...messages]
