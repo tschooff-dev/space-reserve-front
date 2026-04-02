@@ -32,6 +32,7 @@ function buildPageContext(pathname: string): string {
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [userKey, setUserKey] = useState<string | undefined>(undefined)
+  const [authReady, setAuthReady] = useState(false)
   const flags = useFlags()
   const ldClient = useLDClient()
   const pathname = usePathname()
@@ -39,8 +40,8 @@ export function ChatWidget() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({data: {user}}) => {
-      // Use Supabase UUID when logged in (matches LD identify() call), else fall back to anon key
       setUserKey(user?.id ?? localStorage.getItem('ld_user_key') ?? undefined)
+      setAuthReady(true)
     })
   }, [supabase])
 
@@ -58,7 +59,7 @@ export function ChatWidget() {
 
   return (
     <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3">
-      {isOpen && (
+      {isOpen && authReady && (
         <ChatPanel
           onClose={handleClose}
           userKey={userKey}
