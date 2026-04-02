@@ -41,15 +41,23 @@ export async function POST(req: NextRequest) {
   }
 
   // Get model + system prompt from LD AI Config
-  const aiClient = await getAiClient()
-  const aiConfig = await aiClient.completionConfig('space-reserve-concierge', ldContext, FALLBACK_CONFIG)
+  let aiConfig
+  try {
+    const aiClient = await getAiClient()
+    aiConfig = await aiClient.completionConfig('space-reserve-concierge', ldContext, FALLBACK_CONFIG)
+  } catch {
+    aiConfig = {...FALLBACK_CONFIG, tracker: undefined, enabled: true}
+  }
 
   const model = aiConfig.model?.name ?? FALLBACK_CONFIG.model.name
 
+  // If the config is disabled in LD, fall back to the default
+  const configMessages = (aiConfig.enabled === false ? FALLBACK_CONFIG.messages : aiConfig.messages) ?? FALLBACK_CONFIG.messages
+
   // Extract system messages from LD config and append page context
-  const systemMessages = (aiConfig.messages ?? [])
+  const systemMessages = configMessages
     .filter((m: {role: string}) => m.role === 'system')
-    .map((m: {content: string}) => m.content)
+    .map((m: {role: string; content: string}) => m.content)
     .join('\n')
 
   const today = new Date().toISOString().split('T')[0]
