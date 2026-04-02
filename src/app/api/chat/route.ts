@@ -28,6 +28,15 @@ function textResponse(text: string) {
 }
 
 export async function POST(req: NextRequest) {
+  try {
+    return await handleChat(req)
+  } catch (err) {
+    console.error('[/api/chat] unhandled error:', err)
+    return new Response(JSON.stringify({error: String(err)}), {status: 500, headers: {'Content-Type': 'application/json'}})
+  }
+}
+
+async function handleChat(req: NextRequest) {
   const {messages, userKey, pageContext} = (await req.json()) as {
     messages: Anthropic.MessageParam[]
     userKey?: string
