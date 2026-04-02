@@ -139,9 +139,9 @@ export function ChatPanel({onClose, userKey, showSuggestedQuestions, pageContext
             ))}
           </div>
         )}
-        {messages.map((msg, i) => (
+        {messages.map((msg, i) => msg.content ? (
           <ChatMessage key={i} role={msg.role} content={msg.content} />
-        ))}
+        ) : null)}
         {isStreaming && messages[messages.length - 1]?.content === '' && (
           <div className="flex justify-start">
             <div className="bg-white border border-black/10 px-4 py-3">
