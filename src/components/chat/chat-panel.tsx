@@ -30,7 +30,14 @@ export function ChatPanel({onClose, userKey, showSuggestedQuestions, pageContext
 
   useEffect(() => {
     inputRef.current?.focus()
-  }, [])
+    const params = userKey ? `?userKey=${userKey}` : ''
+    fetch(`/api/chat/greeting${params}`)
+      .then(r => r.json())
+      .then(({greeting}) => {
+        if (greeting) setMessages([{role: 'assistant', content: greeting}])
+      })
+      .catch(() => {})
+  }, [userKey])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({behavior: 'smooth'})
@@ -40,7 +47,9 @@ export function ChatPanel({onClose, userKey, showSuggestedQuestions, pageContext
     if (!text.trim() || isStreaming) return
 
     const userMessage: Message = {role: 'user', content: text.trim()}
-    const updatedMessages = [...messages, userMessage]
+    // Exclude the greeting (first assistant message) from API history — it's display only
+    const history = messages.length === 1 && messages[0].role === 'assistant' ? [] : messages
+    const updatedMessages = [...history, userMessage]
     setMessages(updatedMessages)
     setInput('')
     setIsStreaming(true)
@@ -117,24 +126,17 @@ export function ChatPanel({onClose, userKey, showSuggestedQuestions, pageContext
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-[#fafafa]">
-        {messages.length === 0 && (
-          <div className="space-y-4">
-            <p className="text-[11px] text-black/40 tracking-wide text-center pt-4">
-              How can I assist you today?
-            </p>
-            {showSuggestedQuestions && (
-              <div className="space-y-2">
-                {SUGGESTED_QUESTIONS.map(q => (
-                  <button
-                    key={q}
-                    onClick={() => sendMessage(q)}
-                    className="w-full text-left text-[11px] px-4 py-3 bg-white border border-black/10 text-black/70 hover:border-black/30 hover:text-black transition-colors tracking-wide"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            )}
+        {messages.length === 1 && showSuggestedQuestions && (
+          <div className="space-y-2 mt-2">
+            {SUGGESTED_QUESTIONS.map(q => (
+              <button
+                key={q}
+                onClick={() => sendMessage(q)}
+                className="w-full text-left text-[11px] px-4 py-3 bg-white border border-black/10 text-black/70 hover:border-black/30 hover:text-black transition-colors tracking-wide"
+              >
+                {q}
+              </button>
+            ))}
           </div>
         )}
         {messages.map((msg, i) => (
