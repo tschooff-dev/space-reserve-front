@@ -1,19 +1,9 @@
 'use client'
 
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {useFlags, useLDClient} from 'launchdarkly-react-client-sdk'
 import {usePathname} from 'next/navigation'
 import {ChatPanel} from './chat-panel'
-
-type ModelConfig = {
-  provider: string
-  model: string
-}
-
-const DEFAULT_MODEL_CONFIG: ModelConfig = {
-  provider: 'anthropic',
-  model: 'claude-haiku-4-5-20251001',
-}
 
 function buildPageContext(pathname: string): string {
   const hotelMatch = pathname.match(/\/hotel\/([^/]+)/)
@@ -40,24 +30,24 @@ function buildPageContext(pathname: string): string {
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
+  const [userKey, setUserKey] = useState<string | undefined>(undefined)
   const flags = useFlags()
   const ldClient = useLDClient()
   const pathname = usePathname()
 
+  useEffect(() => {
+    const key = localStorage.getItem('ld_user_key') ?? undefined
+    setUserKey(key ?? undefined)
+  }, [])
+
   const chatbotEnabled = Boolean(flags.aiChatbotEnabled)
-  const modelConfig: ModelConfig = (flags.aiModelConfig as ModelConfig) ?? DEFAULT_MODEL_CONFIG
-  const promptVariant: string = (flags.aiSystemPromptVariant as string) ?? 'concierge'
   const showSuggestedQuestions = Boolean(flags.aiSuggestedQuestions)
 
   if (!chatbotEnabled) return null
 
   const handleOpen = () => {
     setIsOpen(true)
-    ldClient?.track('ai_chat_opened', {
-      model: modelConfig.model,
-      promptVariant,
-      page: pathname,
-    })
+    ldClient?.track('ai_chat_opened', {page: pathname})
   }
 
   const handleClose = () => setIsOpen(false)
@@ -67,8 +57,7 @@ export function ChatWidget() {
       {isOpen && (
         <ChatPanel
           onClose={handleClose}
-          modelConfig={modelConfig}
-          promptVariant={promptVariant}
+          userKey={userKey}
           showSuggestedQuestions={showSuggestedQuestions}
           pageContext={buildPageContext(pathname)}
         />

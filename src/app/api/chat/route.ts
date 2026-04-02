@@ -1,20 +1,17 @@
 import Anthropic from '@anthropic-ai/sdk'
 import {NextRequest} from 'next/server'
 import {TOOL_DEFINITIONS, executeToolCall} from './tools'
+import {getAiClient} from '@/lib/launchdarkly-server'
 
-const systemPrompts: Record<string, string> = {
-  concierge: `You are an expert luxury hotel concierge at Space Reserve, a premium hotel amenity reservation platform. Be elegant, warm, and knowledgeable about hospitality. Help guests discover and book amenities like spa treatments, pool access, fitness centers, and dining. Keep responses concise but refined.
-
-When guests ask about availability, always use the check_availability tool to fetch live data — never guess. If you need to know what amenities a hotel offers first, use get_hotel_amenities. When you have the hotel slug from page context, use it directly.`,
-
-  minimal: `You are a helpful assistant for Space Reserve hotel amenity reservations. Answer questions accurately and concisely. Use tools to check real-time availability when asked.`,
-
-  detailed: `You are a comprehensive hotel assistant for Space Reserve, a luxury amenity reservation platform. Provide rich, detailed information about amenities, booking processes, hotel features, and personalized recommendations. Always use the check_availability tool for live availability data — never estimate. Use get_hotel_amenities to learn what a hotel offers before making recommendations.`,
-}
-
-type ModelConfig = {
-  provider: string
-  model: string
+const FALLBACK_CONFIG = {
+  model: {name: 'claude-haiku-4-5-20251001'},
+  messages: [
+    {
+      role: 'system' as const,
+      content:
+        'You are an expert luxury hotel concierge at Space Reserve. Be elegant, warm, and knowledgeable. Help guests discover and book amenities. Use tools to check real-time availability when asked.',
+    },
+  ],
 }
 
 function textResponse(text: string) {
@@ -31,17 +28,31 @@ function textResponse(text: string) {
 }
 
 export async function POST(req: NextRequest) {
-  const {messages, modelConfig, promptVariant, pageContext} = (await req.json()) as {
+  const {messages, userKey, pageContext} = (await req.json()) as {
     messages: Anthropic.MessageParam[]
-    modelConfig?: ModelConfig
-    promptVariant?: string
+    userKey?: string
     pageContext?: string
   }
 
-  const model = modelConfig?.model ?? 'claude-haiku-4-5-20251001'
-  const systemPromptKey = promptVariant ?? 'concierge'
-  const basePrompt = systemPrompts[systemPromptKey] ?? systemPrompts.concierge
-  const systemPrompt = pageContext ? `${basePrompt}\n\nCurrent page context: ${pageContext}` : basePrompt
+  const ldContext = {
+    kind: 'user' as const,
+    key: userKey ?? 'anonymous',
+    anonymous: !userKey,
+  }
+
+  // Get model + system prompt from LD AI Config
+  const aiClient = await getAiClient()
+  const aiConfig = await aiClient.completionConfig('space-reserve-concierge', ldContext, FALLBACK_CONFIG)
+
+  const model = aiConfig.model?.name ?? FALLBACK_CONFIG.model.name
+
+  // Extract system messages from LD config and append page context
+  const systemMessages = (aiConfig.messages ?? [])
+    .filter((m: {role: string}) => m.role === 'system')
+    .map((m: {content: string}) => m.content)
+    .join('\n')
+
+  const systemPrompt = pageContext ? `${systemMessages}\n\nCurrent page context: ${pageContext}` : systemMessages
 
   const anthropic = new Anthropic({apiKey: process.env.ANTHROPIC_API_KEY})
   const messagesForAPI: Anthropic.MessageParam[] = [...messages]
@@ -59,6 +70,15 @@ export async function POST(req: NextRequest) {
     if (response.stop_reason === 'end_turn') {
       const textBlock = response.content.find(b => b.type === 'text')
       const text = textBlock?.type === 'text' ? textBlock.text : ''
+
+      // Track token usage back to LD
+      aiConfig.tracker?.trackTokens({
+        total: response.usage.input_tokens + response.usage.output_tokens,
+        input: response.usage.input_tokens,
+        output: response.usage.output_tokens,
+      })
+      aiConfig.tracker?.trackSuccess()
+
       return textResponse(text)
     }
 

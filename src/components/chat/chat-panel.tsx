@@ -8,15 +8,9 @@ type Message = {
   content: string
 }
 
-type ModelConfig = {
-  provider: string
-  model: string
-}
-
 type ChatPanelProps = {
   onClose: () => void
-  modelConfig: ModelConfig
-  promptVariant: string
+  userKey: string | undefined
   showSuggestedQuestions: boolean
   pageContext: string
 }
@@ -27,7 +21,7 @@ const SUGGESTED_QUESTIONS = [
   'Can I cancel a booking?',
 ]
 
-export function ChatPanel({onClose, modelConfig, promptVariant, showSuggestedQuestions, pageContext}: ChatPanelProps) {
+export function ChatPanel({onClose, userKey, showSuggestedQuestions, pageContext}: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
@@ -60,8 +54,7 @@ export function ChatPanel({onClose, modelConfig, promptVariant, showSuggestedQue
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           messages: updatedMessages,
-          modelConfig,
-          promptVariant,
+          userKey,
           pageContext,
         }),
       })
